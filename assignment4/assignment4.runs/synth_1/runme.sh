@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log thing_with_latch.vds -m64 -mode batch -messageDb vivado.pb -notrace -source thing_with_latch.tcl
+EAStep vivado -log task2.vds -m64 -mode batch -messageDb vivado.pb -notrace -source task2.tcl

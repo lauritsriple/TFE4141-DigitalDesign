@@ -14,7 +14,7 @@ set_property parent.project_path C:/Users/student/Documents/TFE4141_GR17/assignm
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language VHDL [current_project]
 set_property board_part xilinx.com:zc702:part0:1.2 [current_project]
-read_vhdl -library xil_defaultlib C:/Users/student/Documents/TFE4141_GR17/assignment4/assignment4.srcs/sources_1/new/task1.vhd
-synth_design -top thing_with_latch -part xc7z020clg484-1
-write_checkpoint -noxdef thing_with_latch.dcp
-catch { report_utilization -file thing_with_latch_utilization_synth.rpt -pb thing_with_latch_utilization_synth.pb }
+read_vhdl -library xil_defaultlib C:/Users/student/Documents/TFE4141_GR17/assignment4/assignment4.srcs/sources_1/new/task2.vhd
+synth_design -top task2 -part xc7z020clg484-1
+write_checkpoint -noxdef task2.dcp
+catch { report_utilization -file task2_utilization_synth.rpt -pb task2_utilization_synth.pb }

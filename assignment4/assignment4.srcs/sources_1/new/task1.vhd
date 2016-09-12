@@ -11,11 +11,11 @@ entity thing_with_latch is
 end thing_with_latch;
 
 architecture rtl of thing_with_latch is
-    begin
-        process(a,b)
-            begin
-                if (a=b) then
-                    eq <= '1';
-                end if;
-        end process;
-    end rtl;
+begin
+    process(a,b)
+        begin
+            if (a=b) then
+                eq <= '1';
+            end if;
+    end process;
+end rtl;
