@@ -82,6 +82,20 @@ process. A signal is defined outside of the process and therefore
 it can safely be read from multiple processes. If one wishes to write
 to the signal you need to be careful with avoiding conflicts.
 
+\section{Task 3}
+\subsection{}
+The reason that the process is not synthesizable is due to a security
+feature in Vivado. The reason for this security feature is to minimize
+differences between simulation and synthesis.
+
+\subsection{}
+Yes, there is reason to suspect a difference between simulation and
+synthesization. The reason is that the synthesized circuit will be
+sensitive to signals that the simulation is not.
+
+\subsection{}
+Make sure that every sensitivity list is updated with all signals it
+needs to react to.
 
 
 
