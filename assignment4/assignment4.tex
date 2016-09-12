@@ -68,6 +68,24 @@ Image: task2-design1
 Image: task2-design2
 
 \subsection{}
+There are two main requirements for a variable to be implemented as a
+register. One, it needs to be dependent of a clock and two, a variable
+needs to be assigned to a signal.
+
+If you alter the variable after the last assignment to the signal a
+new register is created. It is this that happens in design1.
+
+\subsection{}
+A variable is local to each process, its scope does not extend beyond
+the process. As such one can not read or write to it from another
+process. A signal is defined outside of the process and therefore
+it can safely be read from multiple processes. If one wishes to write
+to the signal you need to be careful with avoiding conflicts.
+
+
+
+
+
 
 
 
