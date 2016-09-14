@@ -1,9 +1,3 @@
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
-
-
 \documentclass{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -15,15 +9,14 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{cleveref}
-\usepackage{circuitikz}
 \usepackage{listings}
 
 \title{Design of Digital systems 1 TFE4141 - Assignment 4}
-\author{Sindre Hansen - 732719}
+\author{Sindre Hansen \\ Laurits Telle Riple}
 \date{Fall 2016}
 
-\renewcommand\thesection{\arabic{section}}
-\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+\renewcommand\thesection{Task \arabic{section}}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
 
 
 \begin{document}
@@ -34,7 +27,7 @@
 \maketitle
 \rule{\linewidth}{0.5mm}
 
-\section{Task 1}
+\section{}
 \subsection{}
 \begin{figure}[hbp]
   \centering
@@ -50,7 +43,7 @@ The way to make sure that latches are not generated from combinatorial
 processes is to always make sure that there are no incomplete
 branches, or incomplete signal assignments.
 
-\section{Task 2}
+\section{}
 \subsection{}
 If we assume that on the first run the reset is held high then there's
 created a single flip-flop for 't' in both designs. However, if we on
@@ -88,7 +81,7 @@ process. A signal is defined outside of the process and therefore
 it can safely be read from multiple processes. If one wishes to write
 to the signal you need to be careful with avoiding conflicts.
 
-\section{Task 3}
+\section{}
 \subsection{}
 The reason that the process is not synthesizable is due to a security
 feature in Vivado. The reason for this security feature is to minimize
@@ -103,12 +96,9 @@ sensitive to signals that the simulation is not.
 Make sure that every sensitivity list is updated with all signals it
 needs to react to.
 
-
-
-
-
-
-
-
-
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
