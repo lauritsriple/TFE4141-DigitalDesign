@@ -42,6 +42,20 @@
 \rule{\linewidth}{0.5mm}
 
 \section{Draw a block diagram}
+\section{Simulate the circuit}
+From the behavvioral simulation we send in
+0x00000003000000020000000100000000=50462976
+0x00000030000000200000001000000000=100925952
+And get result:
+0x00000033000000220000001100000000=151388928
+Which look correct. So the adder is working!
+\section{Count the number of flip flops that should be inferred during synthesis}
+Seems like the synthesised model is using 384 flipflops
+\section{Synthesize the design and report the max clock frequency}
+We see that we get a negative slack og 1ns, but how does that transelate to 166Mhz? Ask the student assistent!
+\section{Find the critical path in the design and improve timing}
+
+\section{Write RTL code, test and synthesize the new design}
 
 
 \end{document}
