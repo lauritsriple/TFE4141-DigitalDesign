@@ -11,11 +11,21 @@
 \usepackage{cleveref}
 \usepackage{listings}
 
+\lstset{
+  language=VHDL,
+  basicstyle=\small\sffamily,
+  numbers=left,
+  numberstyle=\tiny,
+  frame=tb,
+  columns=fullflexible,
+  showstringspaces=false
+}
+
 \title{Design of Digital systems 1 TFE4141 - Assignment 4}
 \author{Sindre Hansen \\ Laurits Telle Riple}
 \date{Fall 2016}
 
-\renewcommand\thesection{Task \arabic{section}}
+\renewcommand\thesection{Task \arabic{section}: }
 \renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
 
 
@@ -27,7 +37,7 @@
 \maketitle
 \rule{\linewidth}{0.5mm}
 
-\section{}
+\section{Inferred latches}
 \subsection{}
 \begin{figure}[hbp]
   \centering
@@ -43,7 +53,7 @@ The way to make sure that latches are not generated from combinatorial
 processes is to always make sure that there are no incomplete
 branches, or incomplete signal assignments.
 
-\section{}
+\section{Signals/variables and registers (flip-flops)}
 \subsection{}
 If we assume that on the first run the reset is held high then there's
 created a single flip-flop for 't' in both designs. However, if we on
@@ -81,7 +91,7 @@ process. A signal is defined outside of the process and therefore
 it can safely be read from multiple processes. If one wishes to write
 to the signal you need to be careful with avoiding conflicts.
 
-\section{}
+\section{Incomplete sensitivity lists}
 \subsection{}
 The reason that the process is not synthesizable is due to a security
 feature in Vivado. The reason for this security feature is to minimize
@@ -95,6 +105,24 @@ sensitive to signals that the simulation is not.
 \subsection{}
 Make sure that every sensitivity list is updated with all signals it
 needs to react to.
+
+\section{Combinational loops}
+\subsection{}
+A situation where oscillations from combinational loops are not
+discovered during simulation can occur if the signal that causes the
+oscillations is not included in the sensitivity list. E.g. if the
+signal \emph{b} is not included in the sensitivity list in the
+following statement there would be no oscillation in the simulation,
+but there would be in the synthesis.
+
+\begin{lstlisting}
+b <= a xor b;
+y <= b;
+\end{lstlisting}
+
+\subsection{}
+It is permissible to have the same signal/variable on both sides of an
+assignment if \ldots
 
 \end{document}
 
