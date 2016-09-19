@@ -40,33 +40,30 @@ end adder_datapath;
 architecture rtl of adder_datapath is
 
   -- Signals associated with the input registers
-  signal a_r, a_nxt: std_logic_vector(127 downto 0);
-  signal b_r, b_nxt: std_logic_vector(127 downto 0);
-  
+  signal a_r, a_nxt: std_logic_vector(159 downto 0);
+  signal cr_r,cr_nxt: std_logic;
   -- Signals associated with the output registers
-  signal y_r, y_nxt: std_logic_vector(127 downto 0);
+  signal y_r, y_nxt: std_logic_vector(31 downto 0);
     
 begin
 
   -- ***************************************************************************
-  -- Register a_r and b_r
+  -- Register a_r
   -- ***************************************************************************
   process (clk, reset_n) begin
     if(reset_n = '0') then
-      a_r <= (others => '0');
-      b_r <= (others => '0');      
+      a_r <= (others => '0');    
     elsif(clk'event and clk='1') then
       if(input_reg_en ='1') then
         a_r <= a_nxt;
-        b_r <= b_nxt;        
       end if;
     end if;
   end process;
     
-  process (data_in, a_r, b_r) begin
-    a_nxt <= data_in & a_r(127 downto 32);
-    b_nxt <= a_r(31 downto 0) & b_r(127 downto 32);
+  process (data_in, a_r) begin
+    a_nxt <= data_in & a_r(159 downto 32);
   end process; 
+
 
   -- ***************************************************************************
   -- Register y_r
@@ -75,19 +72,27 @@ begin
   -- ***************************************************************************
   process (clk, reset_n) begin
     if(reset_n = '0') then
-      y_r <= (others => '0');     
+      y_r <= (others => '0');
+      cr_r <= '0';          
     elsif(clk'event and clk='1') then
       if(output_reg_en ='1') then
-        y_r <= y_nxt;       
+        y_r <= y_nxt;
+        cr_r <= cr_nxt;
       end if;
     end if;
   end process;
   
-  process (y_r, a_r, b_r, output_reg_load) begin
+  
+  process (y_r, a_r, output_reg_load) 
+  variable adend1,adend2: unsigned(33 downto 0);
+  variable result: std_logic_vector(33 downto 0);
+  begin
     if(output_reg_load = '1') then
-      y_nxt <= std_logic_vector(unsigned(a_r) + unsigned(b_r));
-    else
-      y_nxt <= x"00000000" & y_r(127 downto 32);
+      adend1:=unsigned('0' & a_r(159 downto 128)& b"1");
+      adend2:= unsigned('0' & a_r(31 downto 0)& cr_r);
+      result:=std_logic_vector(adend1 + adend2);
+      y_nxt <= result(32 downto 1);
+      cr_nxt<= result(33);
     end if;
   end process;
   

@@ -40,7 +40,7 @@ architecture rtl of adder_controller is
   signal output_reg_shift     : std_logic;
   signal result_ready_r       : std_logic;
   signal input_shift_counter_r: unsigned(2 downto 0);
-  signal output_shift_counter_r: unsigned(1 downto 0);
+  --signal output_shift_counter_r: unsigned(1 downto 0);
   
 begin
 
@@ -71,7 +71,7 @@ begin
     elsif(clk'event and clk='1') then
       output_reg_load_r <= '0';    
       if(input_reg_en_i = '1') then
-        if(input_shift_counter_r = 7) then
+        if(input_shift_counter_r >= 5) then
           output_reg_load_r <= '1';
         end if;
       end if;
@@ -80,15 +80,15 @@ begin
     
   -- Increment the output shift counter until all the data in the result has been
   -- shifted out
-  process(clk, reset_n) begin
-    if(reset_n='0') then
-      output_shift_counter_r <= (others =>'0');
-    elsif(clk'event and clk='1') then
-      if(output_reg_shift = '1') then
-        output_shift_counter_r <= output_shift_counter_r + 1;
-      end if;
-    end if;
-  end process;
+--  process(clk, reset_n) begin
+--    if(reset_n='0') then
+--      output_shift_counter_r <= (others =>'0');
+--    elsif(clk'event and clk='1') then
+--      if(output_reg_shift = '1') then
+--        output_shift_counter_r <= output_shift_counter_r + 1;
+--      end if;
+--    end if;
+--  end process;
 
   -- Detect when we can start the process of shifting out data
   process(clk, reset_n) begin
@@ -105,8 +105,8 @@ begin
   
   -- Data is valid at the output when we are in the middle of shifting
   -- out data or when new results are ready.
-  process(output_shift_counter_r, result_ready_r) begin
-    if(output_shift_counter_r /= "00") or (result_ready_r ='1') then
+  process(result_ready_r) begin
+    if (result_ready_r ='1') then
       data_out_valid_i <= '1';
     else
       data_out_valid_i <= '0';
