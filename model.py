@@ -1,44 +1,41 @@
-
 def RSA(key1, mod, mes):
     return ((mes**(key1)) % mod)
 
-def monPro(A,B,m):
-    # D = 0
-    # k = len(bin(B))-2
-    # for i in range(k):
-    #     D = D + A*int(bin(B)[-i-1])
-    #     D = (D + (D%2)*m) >> 1
-    return (A*B)%m
-
-def monExp(P,e,m):
-    K = 2**(2m) % m
-    Z = monPro(1,K,m)
-    P = monPro(P,K,m)
-    k = len(bin(e))-2
-    for i in range(k):
-        if (int(bin(e)[-i-1])):
-            Z = monPro(Z,P,m)
-        P = monPro(P,P,m)
-    Z = monPro(1,Z,m)
-    return Z
-
+def monPro(a,b, n_marked, r, n):
+	t = a*b
+	m = t*n_marked%r
+	u = (t+m*n)//r
+#	print("Monpro:", a, b)
+	if u >= n:
+#		print("Monproresult:", u-n)
+		return u-n
+	else:
+#		print("Monproresult:", u)
+		return u
+	
+def modExp(a,b,n):
+	k = n.bit_length()
+	r = 2**(k)
+	#Calculate r_marked
+	i = 1
+	while (r*i%n != 1):
+		i+=1
+	r_marked = i
+	
+	#Calculate n_marked
+	n_marked = int((r*r_marked -1)/n)
+	
+	a_hat = a*r%n
+	x_hat = r%n
+	for i in range(k-1, -1, -1):
+		x_hat = monPro(x_hat, x_hat, n_marked, r, n)
+		if (int(bin(b)[-i-1])):
+			x_hat = monPro(a_hat, x_hat, n_marked, r, n)
+	x = monPro(x_hat, 1, n_marked, r, n)
+	return r_marked, n_marked, a_hat, x_hat, x
+	
 def main():
-    print(monExp(19, 5, 119))    # print("4:")
-    # print(monPro(8,8,16))
-    # print("1:")
-    # print(monPro(4,4,16))
-    # print("7:")
-    # print(monPro(77,39,14))
-
+	print(modExp(7,10,13))
 
 if __name__ == "__main__":
     main()
-
-# MonPro(A,B,m)=A*B*r^-1*mod(m)
-
-# D = (A*B) mod m
-# D = 0
-# From i= 0 to i = k-1
-# a. D = D + A*B_i
-# b. D = (D+ D(0)*m)/2
-#   3. Output D 	
