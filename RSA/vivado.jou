@@ -1,0 +1,29 @@
+#-----------------------------------------------------------
+# Vivado v2015.2 (64-bit)
+# SW Build 1266856 on Fri Jun 26 16:35:25 MDT 2015
+# IP Build 1264090 on Wed Jun 24 14:22:01 MDT 2015
+# Start of session at: Mon Nov 07 17:29:21 2016
+# Process ID: 6956
+# Log file: Z:/NTNU/TFE4141/Project/RSA/vivado.log
+# Journal file: Z:/NTNU/TFE4141/Project/RSA\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project Z:/NTNU/TFE4141/Project/RSA/RSA.xpr
+import_files -norecurse {Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/mega_adder.vhd Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/adder_datapath.vhd Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/monpro.vhd Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/adder_controller.vhd}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1
+remove_files Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/imports/new/monpro.vhd
+import_files -force -norecurse Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/monpro.vhd
+update_compile_order -fileset sources_1
+remove_files -fileset sim_1 Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sim_1/new/monpro.vhd
+file mkdir Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/new
+close [ open Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/new/u_monpro_controller.vhd w ]
+add_files Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/new/u_monpro_controller.vhd
+close [ open Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/new/u_monpro_datapath.vhd w ]
+add_files Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources_1/new/u_monpro_datapath.vhd
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1
+update_compile_order -fileset sources_1
