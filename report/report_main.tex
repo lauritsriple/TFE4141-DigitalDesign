@@ -1,0 +1,52 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+\usepackage{parskip}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[a4paper]{geometry}
+\usepackage{cleveref}
+\usepackage{todonotes}
+
+\title{Design of Digital Systems 1 - Term Project}
+\author{
+  Sindre Hansen -- 732719 \and
+  Laurits Telle Riple -- XXXXXX}
+\date{November 2016}
+
+\begin{document}
+
+\begin{titlepage}
+    \maketitle
+    \rule{\linewidth}{0.5mm}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/logontnu_eng}
+    \end{figure}
+    \thispagestyle{empty}
+\end{titlepage}
+
+%\section*{Table of contents}
+\tableofcontents
+\thispagestyle{empty} %Avoid page numbering on the table of contents
+\newpage
+\setcounter{page}{1}
+\input{references}
+
+\end{document}
