@@ -1,6 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  "../../../task2.srcs/sources_1/new/oving2.vhd"
-vhdl xil_defaultlib  "../../../task2.srcs/sim_1/new/oving2tb.vhd"
-
-# Do not sort compile order
-nosort

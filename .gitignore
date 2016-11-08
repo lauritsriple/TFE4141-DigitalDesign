@@ -194,3 +194,12 @@ TSWLatexianTemp*
 # temp
 *.tmp
 *.temp
+
+#Vivado
+
+#Ignore Vivado compiler output
+*.runs/
+*.cache/
+*.hw/
+*.sim/
+*.str
