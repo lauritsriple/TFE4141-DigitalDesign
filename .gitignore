@@ -203,3 +203,6 @@ TSWLatexianTemp*
 *.hw/
 *.sim/
 *.str
+*.jou
+*__Previews/
+*.vhdPreview
