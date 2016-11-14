@@ -1,20 +1,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
-
--- TODO
--- Make counter 
--- Make shiftRegister (See mega adder, it has multiple shift registers)
--- DONE! Added mega adder Make Full adder
+-- Monpro top module
+-- This module connects the datapath and controll path of the monpro module.
 
 entity monpro is
     port (
@@ -30,15 +18,22 @@ entity monpro is
         
         -- Data output interface
         coreFinished        : out std_logic;
-        result              : out std_logic_vector(127 downto 0);
+        result              : out std_logic_vector(127 downto 0)
     );
 end monpro;
 
 architecture rtl of monpro is
     --signals here
+    signal M_reg_load_en    : std_logic;
+    signal B_reg_load_en    : std_logic;
+    signal B_reg_shift_en   : std_logic;
+    signal mux1             : std_logic;
+    signal mux2             : std_logic;
+    signal B0               : std_logic;
+    signal M0               : std_logic;
     
 begin
-    u_monpro_datapath: entity work.monpro_datapath port map(
+    u_monpro_datapath: entity work.u_monpro_datapath port map(
         clk=>clk,
         resetN=>resetN,
         
@@ -47,11 +42,21 @@ begin
         B => B,
         n => n,
         
+        --Internal interface between datapath and controllpath
+        M_reg_load_en=>M_reg_load_en,
+        B_reg_load_en=>B_reg_load_en,
+        B_reg_shift_en=>B_reg_shift_en,
+        mux1=>mux1,
+        mux2=>mux2,
+        B0=>B0,
+        M0=>M0,
+        
+        
         --Data out interface
         result=>result
     );
     
-    u_monpro_controller: entity work.monpro_controller port map(
+    u_monpro_controller: entity work.u_monpro_controller port map(
         clk=>clk,
         resetN=>resetN,
         
@@ -59,7 +64,16 @@ begin
         startMonpro=>startMonpro,
         
         --Data out interface
-        coreFinished=>coreFinished
+        coreFinished=>coreFinished,
+        
+        --Internal interface between datapath and controllpath
+        M_reg_load_en=>M_reg_load_en,
+        B_reg_load_en=>B_reg_load_en,
+        B_reg_shift_en=>B_reg_shift_en,
+        mux1=>mux1,
+        mux2=>mux2,
+        B0=>B0,
+        M0=>M0
     );
 end rtl;
         

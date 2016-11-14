@@ -1,35 +1,6 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 11/07/2016 06:00:22 PM
--- Design Name: 
--- Module Name: u_monpro_datapath - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use IEEE.numeric_std.ALL;
 
 entity u_monpro_datapath is
     Port (
@@ -44,9 +15,13 @@ entity u_monpro_datapath is
         M_reg_load_en       : in std_logic;
         B_reg_load_en       : in std_logic;
         B_reg_shift_en      : in std_logic;
+        mux1                : in std_logic;
+        mux2                : in std_logic;
         
         -- Data output interface
-        result              : out std_logic_vector(127 downto 0);
+        B0                  : out std_logic;
+        M0                  : out std_logic;
+        result              : out std_logic_vector(127 downto 0)
     );
 end u_monpro_datapath;
 
@@ -111,9 +86,12 @@ begin
     -- ***************************************************************************
     -- 128bit parallel adder                                                  
     -- ***************************************************************************
-    sum<=operand+m_Reg;
+    sum<=std_logic_vector(unsigned(operand)+unsigned(M_reg));
     
-        
-
+    -- ***************************************************************************
+    -- M0 and B0                                           
+    -- ***************************************************************************
+    M0<=M_reg(0);
+    B0<=B_reg(0);
 
 end Behavioral;
