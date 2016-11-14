@@ -31,7 +31,7 @@ architecture Behavioral of u_monpro_datapath is
     signal B_reg            : std_logic_vector(127 downto 0);
     signal operand          : std_logic_vector(127 downto 0);
     signal sum              : std_logic_vector(127 downto 0);
-    signal sum_shift        : std_logic_vector(127 downto 0);
+    signal mux1_out         : std_logic_vector(127 downto 0);
 begin
     -- ***************************************************************************
     -- Register M_reg                                                            
@@ -39,7 +39,9 @@ begin
     process(clk,resetN) begin
         if (resetN='0') then
             M_reg <= (others=>'0');
+            result<= (others=>'0');
         elsif(clk'event and clk='1') then
+        result<=M_reg;
             if (M_reg_load_en='1') then
                 M_reg<=M_reg_next;
             end if;
@@ -66,20 +68,22 @@ begin
     -- ***************************************************************************
     process(mux1,n ,A) begin
         if (mux1='1') then
-            operand<=n;
+            mux1_out<=n;
+            M_reg_next<='0' & sum(127 downto 1);
         else
-            operand<=A;
+            mux1_out<=A;
+            M_reg_next<=sum;
         end if;
     end process;
 
     -- ***************************************************************************
     -- Multiplexer 2 (2:1)                                                      
     -- ***************************************************************************            
-    process(mux2, n, A) begin
+    process(mux2, sum) begin
         if (mux2='1') then
-            M_reg_next<='0' & sum(127 downto 1);
+            operand<=mux1_out;
         else
-            M_reg_next<=sum;
+            operand<=(others=>'0');
         end if;
     end process;
     
@@ -93,5 +97,7 @@ begin
     -- ***************************************************************************
     M0<=M_reg(0);
     B0<=B_reg(0);
+    
+    
 
 end Behavioral;

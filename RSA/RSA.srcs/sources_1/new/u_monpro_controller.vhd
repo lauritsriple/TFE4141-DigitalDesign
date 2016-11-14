@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.numeric_std.ALL;
 
 entity u_monpro_controller is
     port (
@@ -33,18 +34,14 @@ begin
         variable Counter    : unsigned(7 downto 0); -- Can represent 256 values
     begin
         if (ResetN='0') then
-            mux1 <= (others => '0');
-            mux2 <= (others => '0');
-            M_reg_load_en <= (others => '0');
-            B_reg_load_en <= (others => '0');
-            B_reg_shift_en <= (others => '0');
-            Counter <= 255;
+            mux1 <= '0';
+            mux2 <= '0';
+            M_reg_load_en <= '0';
+            B_reg_load_en <= '0';
+            B_reg_shift_en <= '0';
+            Counter:= x"ff";
             coreFinished <='1';
-        end if;
-        
-        if (StartMonpro='1') then
-            CoreFinished<='0';
-            Counter<='0';
+
         --Normal monpro operation
         elsif (Clk'event and Clk='1') then
             -- Pulsed signals
@@ -52,27 +49,35 @@ begin
             B_reg_load_en<='0';
             B_reg_shift_en<='0';
             
-            if (Counter >=255) then --Check if finished
+            if (StartMonpro='1') then
+                CoreFinished<='0';
+                Counter:=x"00";
+                B_reg_load_en<='1';
+
+            elsif (Counter >=255) then --Check if finished
                 CoreFinished<='1';
             else
                 -- Alternate between two operations based on even or odd counter.
                 -- M+A (counter is odd) or M+n>>1 (counter is even) 
                 if (Counter(0)='0') then            -- Counter is even
-                    if (B0) then                    -- B_i is odd
-                        mux1<='0';                  -- Mux choosing A
-                        mux2<='0';                  -- Mux choosing M
+                    if (B0='1') then                    -- B_i is odd
+                        mux1<='0';                  -- Mux choosing A and not shifting
+                        mux2<='1';
                         M_reg_load_en<='1';         -- Enable input so we can overwrite M with M+A
                     end if;
                     B_reg_shift_en<='1';            -- Shifting B so we can get B_(i+1) next time
                     
-                elsif (Counter(0)='1') then         -- Counter is odd
-                    if (M0) then                    -- M[0] is 
-                        mux1<='1';                  -- Mux choosing n
-                        mux2<='1';                  -- Mux choosing M<<1
-                        M_reg_load_en<='1';         -- Enable input so we can overwrite M with M+n
+                else                            -- Counter is odd
+                    if (M0='1') then                -- M[0] is 
+                        mux1<='1';                  -- Mux choosing n and shifting
+                        mux2<='1';                  -- Mux choosing operand to be mux1_out
+                    else
+                        mux1<='1'; 
+                        mux2<='0';
                     end if;
+                    M_reg_load_en<='1';         -- Enable input so we can overwrite M with M+n
                 end if;
-                counter<=counter+1;
+                counter:=counter+1;
             end if;
         end if;
         end process;
