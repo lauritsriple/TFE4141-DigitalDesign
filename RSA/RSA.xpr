@@ -26,8 +26,10 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/u_monpro_controller.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/new/u_monpro_controller.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/new/u_monpro_controller.vhd"/>
+          <Attr Name="ImportTime" Val="1479150669"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -36,6 +38,33 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/new/monpro.vhd"/>
           <Attr Name="ImportTime" Val="1477939259"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/u_rsa_datapath.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/u_rsa_datapath.vhd"/>
+          <Attr Name="ImportTime" Val="1479482977"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/rsa.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/rsa.vhd"/>
+          <Attr Name="ImportTime" Val="1479482583"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/u_rsa_controller.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/u_rsa_controller.vhd"/>
+          <Attr Name="ImportTime" Val="1479479731"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
