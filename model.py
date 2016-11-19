@@ -22,16 +22,16 @@ def monPro(A,B,n):
 def modExp2(m,e,n,r):
         k=128
         Y=(2**(2*k))%n
-        m_=monPro(Y,m,n)
-        x_=monPro(Y,1,n)
+        P=monPro(Y,m,n)
+        R=monPro(Y,1,n)
         #m_ = (m*2**128)%n
         #x_ = (2**128)%n
         for i in range(k-1, -1, -1):
-                x_ = monPro(x_,x_, n)
+                R = monPro(R,R, n)
                 if getBitAt(e,i):
-                        x_ = monPro(m_, x_, n)
-        x_ = monPro(1, x_, n)
-        return x_
+                        R = monPro(P, R, n)
+        R = monPro(1, R, n)
+        return R
 
 
 def modExp(m,e,n,r):

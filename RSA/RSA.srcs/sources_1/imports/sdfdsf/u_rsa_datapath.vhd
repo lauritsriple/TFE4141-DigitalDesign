@@ -7,9 +7,11 @@ entity u_rsa_datapath is
 		-- Clocks and reset
 		clk					: in std_logic;
 		resetN				: in std_logic;
+
 		-- Data input interface
 		dataIn				: in std_logic_vector(31 downto 0);
-		monpro_res			: in std_logic_vector(127 downto 0);
+		monpro_result		: in std_logic_vector(127 downto 0);
+
 		-- Control inputs
 		monpro_mux_1_en1	: in std_logic;
 		monpro_mux_1_en2	: in std_logic;
@@ -22,6 +24,7 @@ entity u_rsa_datapath is
 		e_reg_shift_one_en	: in std_logic; -- Shifts one bit to left
 		M_reg_shift_en		: in std_logic;
 		R_reg_load_en		: in std_logic;
+		R_reg_shift_en		: in std_logic;
 		P_reg_load_en		: in std_logic;
 		
 
@@ -29,18 +32,17 @@ entity u_rsa_datapath is
 		monpro_1			: out std_logic_vector(127 downto 0);
 		monpro_2			: out std_logic_vector(127 downto 0);
 		monpro_3			: out std_logic_vector(127 downto 0);
-		data_out  			: out std_logic_vector(127 downto 0);
-		-- Data control output
+		dataOut  			: out std_logic_vector(127 downto 0);
 		eMSB				: out std_logic; -- MSB of the e register. Used for in control interface
 	);
 end u_rsa_datapath;
 
 architecture Behavioral of u_rsa_datapath is
 	signal Y_reg			: std_logic_vector(127 downto 0);
-	signal X_reg			: std_logic_vector(127 downto 0);
-	signal M_reg			: std_logic_vector(127 downto 0);
-	signal n_reg			: std_logic_vector(127 downto 0);
+	signal X_reg			: std_logic_vector(127 downto 0); --Can be removed but needs more control logic
+	--signal n_reg			: std_logic_vector(127 downto 0); --see port, monpro_3
 	signal e_reg			: std_logic_vector(127 downto 0);
+	signal M_reg			: std_logic_vector(127 downto 0);
 	signal P_reg			: std_logic_vector(127 downto 0);
 	signal R_reg			: std_logic_vector(127 downto 0);
 	signal Y_reg_shift_out	: std_logic_vector(31 downto 0);
@@ -59,7 +61,7 @@ begin
 			if (Y_reg_shift_en='1') then
 				-- Shifts in and shifts out
 				Y_reg_shift_out <= Y_reg(31 downto 0);
-				Y_reg <= data_in & Y_reg(95 downto 0);
+				Y_reg <= data_in & Y_reg(127 downto 32);
             end if;
         end if;
     end process;
@@ -74,28 +76,28 @@ begin
 			elsif (X_reg_shift_en='1') then
 				-- Shifts in and shifts out
 				X_reg_shift_out <= X_reg(31 downto 0);
-				X_reg <= Y_reg_shift_out & X_reg(95 downto 0);
+				X_reg <= Y_reg_shift_out & X_reg(127 downto 32);
             end if;
         end if;
     end process;
 
 	-- ***************************************************************************
-    -- Register n_reg (R**2modn)
+    -- Register n_reg/monpro_3 
     -- ***************************************************************************
     process(clk,resetN) begin
         if (resetN='0') then
-            n_reg <= (others=>'0');
+            monpro_3 <= (others=>'0');
         elsif(clk'event and clk='1') then
 			if (n_reg_shift_en='1') then
 				-- Shifts in and shifts out
-				n_reg_shift_out <= n_reg(31 downto 0);
-				n_reg <=X_reg_shift_out & n_reg(95 downto 0);
+				n_reg_shift_out <= monpro_3(31 downto 0);
+				monpro_3 <=X_reg_shift_out & monpro_3(127 downto 32);
             end if;
         end if;
     end process;
 
 	-- ***************************************************************************
-    -- Register e_reg (R**2modn)
+    -- Register e_reg 
     -- ***************************************************************************
     process(clk,resetN) begin
         if (resetN='0') then
@@ -103,8 +105,8 @@ begin
         elsif(clk'event and clk='1') then
 			if (e_reg_shift_en='1') then
 				-- Shifts in and shifts out
-				e_reg_shift_out <= e_reg(31 downto 0);
-				e_reg <= n_reg_shift_out & e_reg(95 downto 0);
+				--e_reg_shift_out <= e_reg(31 downto 0); -- Not needed since the we dont have to shift this out
+				e_reg <= n_reg_shift_out & e_reg(127 downto 32);
 			elsif (e_reg_shift_one_en='1'); --left shift
 				eMSB<=e_reg(127);
 				e_reg<=e_reg(126 downto 0) & '0';
@@ -133,7 +135,7 @@ begin
 			P_reg<=(others=>'0');
 		elsif (clk'event and clk='1') then
 			if (P_reg_load_en='1') then
-				P_reg<=monpro_res;
+				P_reg<=monpro_result;
 			end if;
 		end if;
 	end process;
@@ -146,16 +148,16 @@ begin
 			R_reg<=(others=>'0');
 		elsif (clk'event and clk='1') then
 			if (R_reg_load_en='1') then
-				R_reg<=monpro_res;
+				R_reg<=monpro_result;
 			elsif (R_reg_shift_out='1') then
 				data_out<=R_reg(31 downto 0);
-				R_reg<="0" & R_reg(127 downto 32);
+				R_reg<=x"00" & R_reg(127 downto 32);
 			end if;
 		end if;
 	end process;
 
     -- ***************************************************************************
-    -- Multiplexer Monpro in 1  (4:1)
+    -- Multiplexer Monpro_in_1  (4:1)
     -- ***************************************************************************
     process(monpro_mux_1_en1,monpro_mux_1_en2) begin
         if (monpro_mux_1_en1='1') and (monpro_mux_1_en2='1') then
@@ -182,9 +184,5 @@ begin
         end if;
     end process;
 
-    -- ***************************************************************************
-    --  Monpro in 3
-    -- ***************************************************************************
-	monpro_3<=n_reg;
-
+	-- monpro_3 is n_reg, does not need a process to assign it, since it always the same, Just port it out
 end Behavioral;
