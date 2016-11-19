@@ -12,8 +12,8 @@ entity rsa is
         dataIn          : in std_logic_vector(31 downto 0);
 
         dataOut         : out std_logic_vector(31 downto 0);
-        coreFinished    : std_logic
-    );
+        coreFinished    : out std_logic
+   );
 end rsa;
 
 architecture rtl of rsa is
@@ -64,7 +64,7 @@ begin
 
 		-- Data in/out to RSA
 		dataOut 			=> dataOut,
-        dataIn 				=> dataIn
+        dataIn 				=> dataIn,
 
         -- Data in/out to monpro
 		monpro_1 			=> monpro_1,
@@ -114,16 +114,15 @@ begin
         coreFinished 		=> coreFinished
     );
 	monpro : entity work.monpro port map(
-		-- TODO: Check if this is the right direction on assigning the pins
 		clk 				=> clk,
 		resetN 				=> resetN,
 
-		monpro_start 		=> startMonpro,
-		monpro_1			=> A,
-		monpro_2			=> B,
-		monpro_3			=> n,
+		startMonpro 		=> monpro_start,
+		A			        => monpro_1,
+		B			        => monpro_2,
+		n			        => monpro_3,
 
-		monpro_coreFinished	=>coreFinished,
-		monpro_result		=>result
+		coreFinished        => monpro_coreFinished,
+		result              => monpro_result
 	);
 end rtl;
