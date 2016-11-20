@@ -80,9 +80,12 @@ begin
 
         when e_EXECUTE =>
           MonproState <= e_WAIT_CYCLE; 
-          A <= std_logic_vector(to_unsigned(3,128));
-          B <= std_logic_vector(to_unsigned(3,128));
-          n <= std_logic_vector(to_unsigned(13,128));                                      
+--          A <= std_logic_vector(to_unsigned(3,128));
+--          B <= std_logic_vector(to_unsigned(3,128));
+--          n <= std_logic_vector(to_unsigned(13,128));          
+            A <= x"819dc6b2819dc6b2819dc6b2819dc6b2";
+            B <= x"0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+            n <= x"819dc6b2574e12c3c8bc49cdd79555fd";              
           startMonpro <= '1';
        
         when e_WAIT_CYCLE =>

@@ -62,10 +62,11 @@ begin
         elsif(clk'event and clk='1') then
 			if (Y_reg_shift_en='1') then
 				-- Shifts in and shifts out
-				Y_reg_shift_out <= Y_reg(31 downto 0);
+				--Y_reg_shift_out <= Y_reg(31 downto 0);
 				Y_reg <= dataIn & Y_reg(127 downto 32);
             end if;
         end if;
+        Y_reg_shift_out<= Y_reg(31 downto 0);
     end process;
 
 	-- ***************************************************************************
@@ -78,10 +79,11 @@ begin
         elsif(clk'event and clk='1') then
 			if (X_reg_shift_en='1') then
 				-- Shifts in and shifts out
-				X_reg_shift_out <= X_reg(31 downto 0);
+				--X_reg_shift_out <= X_reg(31 downto 0);
 				X_reg <= Y_reg_shift_out & X_reg(127 downto 32);
             end if;
         end if;
+        X_reg_shift_out <= X_reg(31 downto 0);
     end process;
 
 	-- ***************************************************************************
@@ -95,10 +97,11 @@ begin
         elsif(clk'event and clk='1') then
 			if (n_reg_shift_en='1') then
 				-- Shifts in and shifts out
-				n_reg_shift_out <= n_reg(31 downto 0);
+				--n_reg_shift_out <= n_reg(31 downto 0);
 				n_reg <=X_reg_shift_out & n_reg(127 downto 32);
             end if;
         end if;
+        n_reg_shift_out <= n_reg(31 downto 0);
     end process;
 
 	-- ***************************************************************************
