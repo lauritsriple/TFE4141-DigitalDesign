@@ -191,3 +191,15 @@ source RSA_Monpro_TB.tcl
 restart
 run 1000 us
 close_sim
+launch_simulation
+launch_simulation
+open_wave_config Z:/NTNU/TFE4141/Project/RSA/RSACoreTestBench_behav.wcfg
+source RSA_Monpro_TB.tcl
+restart
+run 1000 us
+close_sim
+launch_simulation
+open_wave_config Z:/NTNU/TFE4141/Project/RSA/RSACoreTestBench_behav.wcfg
+source RSA_Monpro_TB.tcl
+restart
+run 1000 us
