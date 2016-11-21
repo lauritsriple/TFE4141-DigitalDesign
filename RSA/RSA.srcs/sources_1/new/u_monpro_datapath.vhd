@@ -41,7 +41,6 @@ begin
             M_reg <= (others=>'0');
             result<= (others=>'0');
         elsif(clk'event and clk='1') then
-
             if (M_reg_load_en='1') then
                 M_reg<=M_reg_next;
             end if;
@@ -89,7 +88,7 @@ begin
     end process;
     
     -- ***************************************************************************
-    -- 128bit parallel adder                                                  
+    -- 129bit parallel adder                                                  
     -- ***************************************************************************
     sum<=std_logic_vector(unsigned(operand)+unsigned(M_reg));
     

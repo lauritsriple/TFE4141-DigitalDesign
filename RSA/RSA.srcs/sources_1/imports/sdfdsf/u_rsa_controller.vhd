@@ -39,7 +39,7 @@ architecture Behavioral of u_rsa_controller is
     signal waiting_for_monpro   : std_logic;
     signal substate_counter: integer range 0 to 130;
 begin
-    process(curr_state,substate_counter,clk,resetN,initRsa,startRsa,monpro_coreFinished)
+    process(curr_state,substate_counter,clk,resetN,initRsa,startRsa,monpro_coreFinished,eMSB)
     begin
         if (resetN='0') then
             monpro_mux_1_en1	<='0';

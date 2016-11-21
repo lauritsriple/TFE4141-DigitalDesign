@@ -83,8 +83,9 @@ begin
 --          A <= std_logic_vector(to_unsigned(3,128));
 --          B <= std_logic_vector(to_unsigned(3,128));
 --          n <= std_logic_vector(to_unsigned(13,128));          
-            A <= x"819dc6b2819dc6b2819dc6b2819dc6b2";
-            B <= x"0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+            A <= x"4f4f353b16d9b17cd307f02f393734d9";
+            --B <= x"0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+            B<=x"7637EA28188632D8F2D92845DB649D14";
             n <= x"819dc6b2574e12c3c8bc49cdd79555fd";              
           startMonpro <= '1';
        

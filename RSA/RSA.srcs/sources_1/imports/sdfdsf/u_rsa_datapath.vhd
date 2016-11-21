@@ -55,7 +55,7 @@ begin
 	-- ***************************************************************************
     -- Register Y_reg (R**2modn)
     -- ***************************************************************************
-    process(clk,resetN) begin
+    process(clk,resetN,Y_reg) begin
         if (resetN='0') then
             Y_reg <= (others=>'0');
             Y_reg_shift_out <=(others=>'0');
@@ -72,7 +72,7 @@ begin
 	-- ***************************************************************************
     -- Register X_reg (Rmodn)
     -- ***************************************************************************
-    process(clk,resetN) begin
+    process(clk,resetN,X_reg) begin
         if (resetN='0') then
             X_reg <= (others=>'0');
             X_reg_shift_out <=(others=>'0');
@@ -90,7 +90,7 @@ begin
     -- Register n_reg/monpro_3 
     -- ***************************************************************************
     monpro_3<=n_reg;
-    process(clk,resetN) begin
+    process(clk,resetN,n_reg) begin
         if (resetN='0') then
             n_reg <= (others=>'0');
             n_reg_shift_out <=(others=>'0');
@@ -168,7 +168,7 @@ begin
     -- ***************************************************************************
     -- Multiplexer Monpro_in_1  (4:1)
     -- ***************************************************************************
-    process(monpro_mux_1_en1,monpro_mux_1_en2) begin
+    process(monpro_mux_1_en1,monpro_mux_1_en2,Y_reg,R_reg,P_reg) begin
         if (monpro_mux_1_en1='1') and (monpro_mux_1_en2='1') then
             monpro_1<=Y_reg;
         elsif (monpro_mux_1_en1='1') and (monpro_mux_1_en2='0') then
@@ -183,7 +183,7 @@ begin
     -- ***************************************************************************
     -- Multiplexer Monpro in 2  (3:1)
     -- ***************************************************************************
-    process(monpro_mux_2_en1,monpro_mux_2_en2) begin
+    process(monpro_mux_2_en1,monpro_mux_2_en2,R_reg,M_reg) begin
         if (monpro_mux_2_en1='1') and (monpro_mux_2_en2='1') then
             monpro_2<=R_reg;
         elsif (monpro_mux_2_en1='1') and (monpro_mux_2_en2='0') then
