@@ -65,15 +65,12 @@ begin
     
       -- TB signals    
       MonproState  <= e_IDLE;
-     
    
     elsif (Clk'event and Clk='1') then
-    
       -- Pulsed signals
       startMonpro <= '0';      
       
       case MonproState is
-  
         -- Start the state machine
         when e_IDLE=>
           MonproState <= e_EXECUTE;
@@ -83,10 +80,10 @@ begin
 --          A <= std_logic_vector(to_unsigned(3,128));
 --          B <= std_logic_vector(to_unsigned(3,128));
 --          n <= std_logic_vector(to_unsigned(13,128));          
-            A <= x"4f4f353b16d9b17cd307f02f393734d9";
-            --B <= x"0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            B<=x"7637EA28188632D8F2D92845DB649D14";
-            n <= x"819dc6b2574e12c3c8bc49cdd79555fd";              
+          A <= x"4f4f353b16d9b17cd307f02f393734d9";
+          B <= x"0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+          --B <=x"7637EA28188632D8F2D92845DB649D14";
+          n <= x"819dc6b2574e12c3c8bc49cdd79555fd";              
           startMonpro <= '1';
        
         when e_WAIT_CYCLE =>
@@ -101,22 +98,21 @@ begin
         -- End testbench
         when others => -- e_TEST_FINISHED;
             assert true;
-              report "Finished"
-              severity Failure;                 
+                report "Finished"
+                severity Failure;                 
       end case;
-    end if;  
-  
+    end if;   
   end process;
   
   
   R: entity work.monpro
   port map(      
-    clk             	=> clk, 
+    clk                 => clk, 
     resetN           	=> resetN,
     startMonpro         => startMonpro, 
-    A           	   => A, 
-    B          		=> B, 
-    n           	=> n, 
+    A           	    => A, 
+    B          		    => B, 
+    n           	    => n, 
     result           	=> result, 
     coreFinished     	=> coreFinished
   );  

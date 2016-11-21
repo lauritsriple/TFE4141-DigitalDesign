@@ -11,59 +11,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="32" />
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/resetN" type="logic">
-      <obj_property name="ElementShortName">resetN</obj_property>
-      <obj_property name="ObjectShortName">resetN</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/mux1" type="logic">
-      <obj_property name="ElementShortName">mux1</obj_property>
-      <obj_property name="ObjectShortName">mux1</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/mux2" type="logic">
-      <obj_property name="ElementShortName">mux2</obj_property>
-      <obj_property name="ObjectShortName">mux2</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/M_reg_load_en" type="logic">
-      <obj_property name="ElementShortName">M_reg_load_en</obj_property>
-      <obj_property name="ObjectShortName">M_reg_load_en</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/B_reg_load_en" type="logic">
-      <obj_property name="ElementShortName">B_reg_load_en</obj_property>
-      <obj_property name="ObjectShortName">B_reg_load_en</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/B_reg_shift_en" type="logic">
-      <obj_property name="ElementShortName">B_reg_shift_en</obj_property>
-      <obj_property name="ObjectShortName">B_reg_shift_en</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/B0" type="logic">
-      <obj_property name="ElementShortName">B0</obj_property>
-      <obj_property name="ObjectShortName">B0</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/M0" type="logic">
-      <obj_property name="ElementShortName">M0</obj_property>
-      <obj_property name="ObjectShortName">M0</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/startMonpro" type="logic">
-      <obj_property name="ElementShortName">startMonpro</obj_property>
-      <obj_property name="ObjectShortName">startMonpro</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/coreFinished" type="logic">
-      <obj_property name="ElementShortName">coreFinished</obj_property>
-      <obj_property name="ObjectShortName">coreFinished</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/curr_state" type="other">
-      <obj_property name="ElementShortName">curr_state</obj_property>
-      <obj_property name="ObjectShortName">curr_state</obj_property>
-   </wvobject>
-   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/substate_counter" type="other">
-      <obj_property name="ElementShortName">substate_counter</obj_property>
-      <obj_property name="ObjectShortName">substate_counter</obj_property>
-   </wvobject>
+   <WVObjectSize size="25" />
    <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_datapath/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -139,5 +87,31 @@
    <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_datapath/mux1_out" type="array">
       <obj_property name="ElementShortName">mux1_out[127:0]</obj_property>
       <obj_property name="ObjectShortName">mux1_out[127:0]</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/startMonpro" type="logic">
+      <obj_property name="ElementShortName">startMonpro</obj_property>
+      <obj_property name="ObjectShortName">startMonpro</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/coreFinished" type="logic">
+      <obj_property name="ElementShortName">coreFinished</obj_property>
+      <obj_property name="ObjectShortName">coreFinished</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/curr_state" type="other">
+      <obj_property name="ElementShortName">curr_state</obj_property>
+      <obj_property name="ObjectShortName">curr_state</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/next_state" type="other">
+      <obj_property name="ElementShortName">next_state</obj_property>
+      <obj_property name="ObjectShortName">next_state</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/counter_next" type="other">
+      <obj_property name="ElementShortName">counter_next</obj_property>
+      <obj_property name="ObjectShortName">counter_next</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" fp_name="/RSA_Monpro_TB/R/u_monpro_controller/counter" type="other">
+      <obj_property name="ElementShortName">counter</obj_property>
+      <obj_property name="ObjectShortName">counter</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>

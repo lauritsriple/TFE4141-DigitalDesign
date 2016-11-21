@@ -10,7 +10,7 @@ entity u_monpro_controller is
     
     -- Datapath control signals
     mux1                : out std_logic; -- the mux that chooses between A and n
-    mux2                : out std_logic; -- the mux that chooses between sum and sum_shift
+    mux2                : out std_logic; -- the mux that chooses between sum and sum >> 1
     M_reg_load_en       : out std_logic;
     B_reg_load_en       : out std_logic;
     B_reg_shift_en      : out std_logic;
@@ -29,123 +29,72 @@ entity u_monpro_controller is
 end u_monpro_controller;
 
 architecture Behavioral of u_monpro_controller is
-    type state is (IDLE, LOAD_B, CALC_MA, CALC_Mn);
-    signal curr_state : state;
-    signal substate_counter : integer range 0 to 130;
-
-begin
-    process(curr_state, substate_counter, clk, resetN, startMonpro)
+    type monpro_state is (IDLE, LOAD_B, CALC_MA, CALC_MN);
+    signal curr_state, next_state : monpro_state;
+    signal counter, counter_next : integer range 0 to 130;
+begin 
+    -- Lower section of FSM
+    process (clk, resetN)
     begin
-        if (resetN='0') then
-            mux1          <= '0';
-            mux2          <= '0';
-            M_reg_load_en <= '0';
-            B_reg_load_en <= '0';
-            B_reg_shift_en    <= '0';
-            coreFinished <= '1';
-            substate_counter <= 0;
-        elsif(clk'event and clk='1') then
-            M_reg_load_en <= '0';
-            B_reg_load_en <= '0';
-            B_reg_shift_en <= '0';
+        if (resetN = '0') then
+            curr_state <= IDLE;
+            counter    <= 0;
+        elsif (clk'event and clk='1') then
+            curr_state <= next_state;
+            counter    <= counter_next;
         end if;
+    end process;
+    
+    -- Upper section of FSM
+    process (curr_state, startMonpro, B0, M0, counter)
+    begin
+        -- Default values
+        mux1                        <= '0';
+        mux2                        <= '0';
+        M_reg_load_en               <= '0';
+        B_reg_load_en               <= '0';
+        B_reg_shift_en              <= '0';
+        coreFinished                <= '0';
+        counter_next                <= counter;
         
-        case (curr_state) is
+        case curr_state is
         when IDLE =>
+            coreFinished        <= '1';
             if (startMonpro = '1') then
-                curr_state <= LOAD_B;
-                coreFinished <= '0';
-            end if;
-        when LOAD_B =>
-           if (clk'event and clk = '1') then
-               B_reg_load_en <= '1';
-               curr_state <= CALC_MA;
-           end if;
-        when CALC_MA =>
-            if (clk'event and clk = '1') then
-                if (B0 = '1') then 
-                    mux1 <= '0';
-                    mux2 <= '1';
-                    M_reg_load_en <= '1';
-                end if;
-                B_reg_shift_en <= '1';
-                curr_state <= CALC_Mn;               
-            end if;
-            
-        when CALC_Mn =>
-            if (substate_counter < 128) then
-                if (clk'event and clk='1') then
-                    if (M0 = '1') then
-                        mux1 <= '1';
-                        mux2 <= '1';
-                        M_reg_load_en <= '1';
-                    else
-                        mux1 <= '1';
-                        mux2 <= '0';
-                        M_reg_load_en <= '1';
-                    end if;
-                    substate_counter <= substate_counter + 1;
-                    curr_state <= CALC_MA;
-                end if;
+                next_state      <= LOAD_B;
             else
-                substate_counter <= 0;
-                curr_state <= IDLE;
-                coreFinished <= '1';
+                next_state      <= IDLE;
+            end if;
+        
+        when LOAD_B =>
+            B_reg_load_en       <= '1';
+            next_state          <= CALC_MA;
+            
+        when CALC_MA =>
+            if (B0 = '1') then
+                mux1            <= '0';
+                mux2            <= '1';
+                M_reg_load_en   <= '1';
+            end if;
+            B_reg_shift_en      <= '1';
+            next_state          <= CALC_MN;
+         
+         when CALC_MN =>
+            if (counter < 128) then
+                if (M0 = '1') then
+                    mux1        <= '1';
+                    mux2        <= '1';
+                 else
+                    mux1        <= '1';
+                    mux2        <= '0';           
+                end if;
+                M_reg_load_en   <= '1';
+                counter_next    <= counter + 1;
+                next_state      <= CALC_MA;
+             else
+                counter_next    <= 0;
+                next_state      <= IDLE;
             end if;
         end case;
     end process;
 end Behavioral;
-                    
-             
---    process (Clk,ResetN,StartMonpro) is
---        variable Counter    : unsigned(7 downto 0); -- Can represent 256 values
---    begin
---        if (ResetN='0') then
---            mux1 <= '0';
---            mux2 <= '0';
---            M_reg_load_en <= '0';
---            B_reg_load_en <= '0';
---            B_reg_shift_en <= '0';
---            Counter:= x"ff";
---            coreFinished <='1';
-
---        --Normal monpro operation
---        elsif (Clk'event and Clk='1') then
---            -- Pulsed signals
---            M_reg_load_en<='0';
---            B_reg_load_en<='0';
---            B_reg_shift_en<='0';
-            
---            if (StartMonpro='1') then
---                CoreFinished<='0';
---                Counter:=x"00";
---                B_reg_load_en<='1';
-
---            elsif (Counter >=255) then --Check if finished
---                CoreFinished<='1';
---            else
---                -- Alternate between two operations based on even or odd counter.
---                -- M+A (counter is odd) or M+n>>1 (counter is even) 
---                if (Counter(0)='0') then            -- Counter is even
---                    if (B0='1') then                    -- B_i is odd
---                        mux1<='0';                  -- Mux choosing A and not shifting
---                        mux2<='1';
---                        M_reg_load_en<='1';         -- Enable input so we can overwrite M with M+A
---                    end if;
---                    B_reg_shift_en<='1';            -- Shifting B so we can get B_(i+1) next time
-                    
---                else                            -- Counter is odd
---                    if (M0='1') then                -- M[0] is 
---                        mux1<='1';                  -- Mux choosing n and shifting
---                        mux2<='1';                  -- Mux choosing operand to be mux1_out
---                    else
---                        mux1<='1'; 
---                        mux2<='0';
---                    end if;
---                    M_reg_load_en<='1';         -- Enable input so we can overwrite M with M+n
---                end if;
---                counter:=counter+1;
---            end if;
---        end if;
---        end process;
---end Behavioral;

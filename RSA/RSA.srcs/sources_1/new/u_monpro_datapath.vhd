@@ -36,7 +36,7 @@ begin
     -- ***************************************************************************
     -- Register M_reg                                                            
     -- ***************************************************************************
-    process(clk,resetN) begin
+    process(clk,resetN,M_reg_next,M_reg) begin
         if (resetN='0') then
             M_reg <= (others=>'0');
             result<= (others=>'0');
@@ -44,6 +44,7 @@ begin
             if (M_reg_load_en='1') then
                 M_reg<=M_reg_next;
             end if;
+            M0<=M_reg(0);
         end if;
         result<=M_reg(127 downto 0);
     end process;
@@ -51,7 +52,7 @@ begin
     -- ***************************************************************************
     -- Register B_reg                                                            
     -- ***************************************************************************
-    process(clk,resetN) begin
+    process(clk,resetN,B_reg,B) begin
         if (resetN='0') then
             B_reg<=(others=>'0');
         elsif(clk'event and clk='1') then
@@ -60,13 +61,14 @@ begin
             elsif(B_reg_shift_en='1') then
                 B_reg<='0' & B_reg(127 downto 1);
             end if;
+            B0<=B_reg(0);
         end if;
     end process;
 
     -- ***************************************************************************
     -- Multiplexer 1 (2:1)                                                      
     -- ***************************************************************************
-    process(mux1,n ,A,sum) begin
+    process(mux1,n,A,sum) begin
         if (mux1='1') then
             mux1_out<=n;
             M_reg_next<='0' & sum(128 downto 1);
@@ -95,8 +97,8 @@ begin
     -- ***************************************************************************
     -- M0 and B0                                           
     -- ***************************************************************************
-    M0<=M_reg(0);
-    B0<=B_reg(0);
+    --M0<=M_reg(0);
+    --B0<=B_reg(0);
     
     
 
