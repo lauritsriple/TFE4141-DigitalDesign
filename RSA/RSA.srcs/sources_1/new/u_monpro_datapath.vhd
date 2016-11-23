@@ -44,7 +44,7 @@ begin
             if (M_reg_load_en='1') then
                 M_reg<=M_reg_next;
             end if;
-            M0<=M_reg(0);
+            --M0<=M_reg(0);
         end if;
         result<=M_reg(127 downto 0);
     end process;
@@ -61,7 +61,7 @@ begin
             elsif(B_reg_shift_en='1') then
                 B_reg<='0' & B_reg(127 downto 1);
             end if;
-            B0<=B_reg(0);
+            --B0<=B_reg(0);
         end if;
     end process;
 
@@ -97,8 +97,8 @@ begin
     -- ***************************************************************************
     -- M0 and B0                                           
     -- ***************************************************************************
-    --M0<=M_reg(0);
-    --B0<=B_reg(0);
+    M0<=M_reg(0);
+    B0<=B_reg(0);
     
     
 
