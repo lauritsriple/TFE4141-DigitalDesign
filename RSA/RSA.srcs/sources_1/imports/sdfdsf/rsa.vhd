@@ -2,21 +2,21 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 --use IEEE.NUMERIC_STD.ALL;
 
-entity rsa is
+entity RSACore is
     Port (
-        clk             : in std_logic;
-        resetN          : in std_logic;
+        Clk             : in std_logic;
+        Resetn          : in std_logic;
 
-        initRsa         : in std_logic;
-        startRsa        : in std_logic;
-        dataIn          : in std_logic_vector(31 downto 0);
+        InitRsa         : in std_logic;
+        StartRsa        : in std_logic;
+        DataIn          : in std_logic_vector(31 downto 0);
 
-        dataOut         : out std_logic_vector(31 downto 0);
-        coreFinished    : out std_logic
+        DataOut         : out std_logic_vector(31 downto 0);
+        CoreFinished    : out std_logic
    );
-end rsa;
+end RSACore;
 
-architecture rtl of rsa is
+architecture rtl of RSACore is
     signal monpro_mux_1_en1     : std_logic;
     signal monpro_mux_1_en2     : std_logic;
     signal monpro_mux_2_en1     : std_logic;
@@ -43,8 +43,8 @@ architecture rtl of rsa is
 
 begin
     u_rsa_datapath  : entity work.u_rsa_datapath port map(
-        clk 				=> clk,
-        resetN 				=> resetN,
+        clk 				=> Clk,
+        resetN 				=> Resetn,
 
         -- Control inputs
         monpro_mux_1_en1	=> monpro_mux_1_en1,
@@ -63,8 +63,8 @@ begin
 		P_reg_load_en 		=> P_reg_load_en,
 
 		-- Data in/out to RSA
-		dataOut 			=> dataOut,
-        dataIn 				=> dataIn,
+		dataOut 			=> DataOut,
+        dataIn 				=> DataIn,
 
         -- Data in/out to monpro
 		monpro_1 			=> monpro_1,
@@ -77,8 +77,8 @@ begin
     );
 
     u_rsa_controller : entity work.u_rsa_controller port map(
-        clk 				=> clk,
-        resetN 				=> resetN,
+        clk 				=> Clk,
+        resetN 				=> Resetn,
 
 		-- ***************************************************************************
 		-- Control inputs from u_rsa_datapath
@@ -109,13 +109,13 @@ begin
 		-- ***************************************************************************
 		-- Control inputs/outputs from RSA
     	-- ***************************************************************************
-        initRsa 			=> initRsa,
-        startRsa 			=> startRsa,
-        coreFinished 		=> coreFinished
+        initRsa 			=> InitRsa,
+        startRsa 			=> StartRsa,
+        coreFinished 		=> CoreFinished
     );
 	monpro : entity work.monpro port map(
-		clk 				=> clk,
-		resetN 				=> resetN,
+		clk 				=> Clk,
+		resetN 				=> Resetn,
 
 		startMonpro 		=> monpro_start,
 		A			        => monpro_1,

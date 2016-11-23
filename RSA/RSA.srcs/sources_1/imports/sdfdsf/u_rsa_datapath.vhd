@@ -117,7 +117,7 @@ begin
 				--e_reg_shift_out <= e_reg(31 downto 0); -- Not needed since the we dont have to shift this out
 				e_reg <= n_reg_shift_out & e_reg(127 downto 32);
 			elsif (e_reg_shift_one_en='1') then --left shift
-				e_reg<=e_reg(126 downto 0) & '0';
+				e_reg<=e_reg(126 downto 0) & e_reg(127);
             end if;
         end if;
     end process;
@@ -159,7 +159,7 @@ begin
 			if (R_reg_load_en='1') then
 				R_reg<=monpro_result;
 			elsif (R_reg_shift_en='1') then
-				dataOut<=R_reg(31 downto 0);
+			    dataOut<=R_reg(31 downto 0);
 				R_reg<=x"00000000" & R_reg(127 downto 32);
 			end if;
 		end if;
@@ -176,7 +176,7 @@ begin
         elsif (monpro_mux_1_en1='0') and (monpro_mux_1_en2='1') then
 			monpro_1<=P_reg;
 		else
-			monpro_1<=(others=>'1');
+			monpro_1<=x"00000000000000000000000000000001";
         end if;
     end process;
 
@@ -189,7 +189,7 @@ begin
         elsif (monpro_mux_2_en1='1') and (monpro_mux_2_en2='0') then
 			monpro_2<=M_reg;
 		else
-			monpro_2<=(others=>'1');
+			monpro_2<=x"00000000000000000000000000000001";
         end if;
     end process;
 

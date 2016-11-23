@@ -7,6 +7,7 @@
 -- *****************************************************************************
 library ieee;
 use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.all;
 
 library work;
 use work.RSAParameters.all;
@@ -256,7 +257,7 @@ begin
         -- Verify result
         when e_VERIFY_RESULT => 
           assert Result = CipherText
-            report "Result differs from expected result"
+            report "Result differs from expected result: " & integer'image(to_integer(unsigned(Result))) & "CipherText: " & integer'image(to_integer(unsigned(CipherText)))
             severity Error;
           CryptoState <= e_TEST_FINISHED;             
                        
@@ -265,7 +266,7 @@ begin
           if (endfile(ComFile)) then              
             assert true;
               report "Finished"
-              severity Failure;                 
+              severity Failure;              
           else
             CryptoState <= e_IDLE;                                            
           end if;          
@@ -547,7 +548,7 @@ begin
 --  end process;
   
   
-  R: entity work.rsa
+  R: entity work.RSACore
   port map(      
     clk              => Clk, 
     resetn           => Resetn,

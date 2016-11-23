@@ -12,8 +12,10 @@ entity u_monpro_controller is
     mux1           : out std_logic;     -- the mux that chooses between A and n
     mux2           : out std_logic;  -- the mux that chooses between sum and sum >> 1
     M_reg_load_en  : out std_logic;
+    M_reg_clear    : out std_logic;
     B_reg_load_en  : out std_logic;
     B_reg_shift_en : out std_logic;
+    result_load_en : out std_logic;
 
     -- LSB from registers in datapath
     B0 : in std_logic;
@@ -52,13 +54,16 @@ begin
     mux1           <= '0';
     mux2           <= '0';
     M_reg_load_en  <= '0';
+    M_reg_clear    <= '0';
     B_reg_load_en  <= '0';
     B_reg_shift_en <= '0';
+    result_load_en <= '0';
     coreFinished   <= '0';
     counter_next   <= counter;
 
     case curr_state is
       when IDLE =>
+        M_reg_clear <= '1';
         coreFinished <= '1';
         if (startMonpro = '1') then
           next_state <= LOAD_B;
@@ -92,6 +97,7 @@ begin
           counter_next  <= counter + 1;
           next_state    <= CALC_MA;
         else
+          result_load_en <='1';
           counter_next <= 0;
           next_state   <= IDLE;
         end if;

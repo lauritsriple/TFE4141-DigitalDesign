@@ -25,8 +25,10 @@ end monpro;
 architecture rtl of monpro is
     --signals here
     signal M_reg_load_en    : std_logic;
+    signal M_reg_clear      : std_logic;
     signal B_reg_load_en    : std_logic;
     signal B_reg_shift_en   : std_logic;
+    signal result_load_en   : std_logic;
     signal mux1             : std_logic;
     signal mux2             : std_logic;
     signal B0               : std_logic;
@@ -44,8 +46,10 @@ begin
         
         --Internal interface between datapath and controllpath
         M_reg_load_en=>M_reg_load_en,
+        M_reg_clear => M_reg_clear,
         B_reg_load_en=>B_reg_load_en,
         B_reg_shift_en=>B_reg_shift_en,
+        result_load_en=>result_load_en,
         mux1=>mux1,
         mux2=>mux2,
         B0=>B0,
@@ -68,8 +72,10 @@ begin
         
         --Internal interface between datapath and controllpath
         M_reg_load_en=>M_reg_load_en,
+        M_reg_clear => M_reg_clear,
         B_reg_load_en=>B_reg_load_en,
         B_reg_shift_en=>B_reg_shift_en,
+        result_load_en=>result_load_en,
         mux1=>mux1,
         mux2=>mux2,
         B0=>B0,

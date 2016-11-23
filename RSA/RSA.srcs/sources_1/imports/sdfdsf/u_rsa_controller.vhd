@@ -35,11 +35,12 @@ end u_rsa_controller;
 
 
 architecture Behavioral of u_rsa_controller is
-  type state is (IDLE, LOAD, KEYS, LOAD_MESSAGE, FIRST_PRECALD, SECOND_PRECALC,
+  type state is (IDLE, LOAD_KEYS, LOAD_MESSAGE, FIRST_PRECALC, SECOND_PRECALC,
                  FIRST_LOOP_CALC, SECOND_LOOP_CALC, POST_CALC, OUTPUT_DATA);
-  signal curr_state, next_state : state;
-  signal counter, counter_next  : integer range 0 to 130;
-  
+  signal curr_state, next_state              : state;
+  signal counter, counter_next               : integer range 0 to 130;
+  signal monpro_started, monpro_started_next : std_logic;
+
 begin
   -- Lower section of FSM
   process (clk, resetN)
@@ -47,198 +48,192 @@ begin
     if (resetN = '0') then
       curr_state <= IDLE;
       counter    <= 0;
+      monpro_started <= '0';
     elsif (clk'event and clk = '1') then
-      curr_state <= next_state;
-      counter    <= counter_next;
+      curr_state     <= next_state;
+      counter        <= counter_next;
+      monpro_started <= monpro_started_next;
     end if;
   end process;
 
   -- Upper section of FSM
-  process
+  process(curr_state, startRsa, initRsa, counter, monpro_coreFinished, eMSB, monpro_started)
   begin
-    --stuff    
+    Y_reg_shift_en      <= '0';
+    X_reg_shift_en      <= '0';
+    n_reg_shift_en      <= '0';
+    e_reg_shift_en      <= '0';
+    e_reg_shift_one_en  <= '0';
+    M_reg_shift_en      <= '0';
+    R_reg_load_en       <= '0';
+    R_reg_shift_en      <= '0';
+    P_reg_load_en       <= '0';
+    monpro_mux_1_en1    <= '0';
+    monpro_mux_1_en2    <= '0';
+    monpro_mux_2_en1    <= '0';
+    monpro_mux_2_en2    <= '0';
+    monpro_start        <= '0';
+    coreFinished        <= '0';
+    counter_next        <= counter;
+    monpro_started_next <= monpro_started;
+    next_state          <= curr_state;
+
+    case curr_state is
+      when IDLE =>
+        coreFinished <= '1';
+        if (initRsa = '1') then
+          Y_reg_shift_en <= '1';
+          X_reg_shift_en <= '1';
+          n_reg_shift_en <= '1';
+          e_reg_shift_en <= '1';
+          next_state <= LOAD_KEYS;
+        elsif (startRsa = '1') then
+          M_reg_shift_en <= '1';        next_state <= LOAD_MESSAGE;
+        else
+          next_state <= IDLE;
+        end if;
+
+      when LOAD_KEYS =>
+        Y_reg_shift_en <= '1';
+        X_reg_shift_en <= '1';
+        n_reg_shift_en <= '1';
+        e_reg_shift_en <= '1';
+
+        --Counting one less, because first iteration is done in IDLE
+        if (counter < 14) then
+          counter_next <= counter + 1;
+        else
+          coreFinished <= '1';
+          counter_next <= 0;
+          next_state   <= IDLE;
+        end if;
+
+      when LOAD_MESSAGE =>
+        M_reg_shift_en <= '1';
+        --Counting one less, because first iteration is done in IDLE
+        if (counter < 2) then
+          counter_next <= counter + 1;
+        else
+          counter_next <= 0;
+          next_state   <= FIRST_PRECALC;
+        end if;
+
+      when FIRST_PRECALC =>
+        monpro_mux_1_en1 <= '1';
+        monpro_mux_1_en2 <= '1';
+        monpro_mux_2_en1 <= '1';
+        monpro_mux_2_en2 <= '0';
+
+        if (monpro_coreFinished = '1' and monpro_started = '0') then
+          monpro_start        <= '1';
+          monpro_started_next <= '1';
+          next_state          <= FIRST_PRECALC;
+        elsif (monpro_coreFinished = '1' and monpro_started = '1') then
+          P_reg_load_en       <= '1';
+          monpro_started_next <= '0';
+          next_state          <= SECOND_PRECALC;
+        else
+          next_state <= FIRST_PRECALC;
+        end if;
+
+      when SECOND_PRECALC =>
+        monpro_mux_1_en1 <= '1';
+        monpro_mux_1_en2 <= '1';
+        monpro_mux_2_en1 <= '0';
+        monpro_mux_2_en2 <= '0';
+        if (monpro_coreFinished = '1' and monpro_started = '0') then
+          monpro_start        <= '1';
+          monpro_started_next <= '1';
+          next_state          <= SECOND_PRECALC;
+        elsif (monpro_coreFinished = '1' and monpro_started = '1') then
+          R_reg_load_en       <= '1';
+          monpro_started_next <= '0';
+          next_state          <= FIRST_LOOP_CALC;
+        else
+          next_state <= SECOND_PRECALC;
+        end if;
+
+      when FIRST_LOOP_CALC =>
+        monpro_mux_1_en1 <= '1';
+        monpro_mux_1_en2 <= '0';
+        monpro_mux_2_en1 <= '1';
+        monpro_mux_2_en2 <= '1';
+        if (monpro_coreFinished = '1' and monpro_started = '0') then
+          monpro_start        <= '1';
+          monpro_started_next <= '1';
+          next_state          <= FIRST_LOOP_CALC;
+        elsif (monpro_coreFinished = '1' and monpro_started = '1') then
+          R_reg_load_en       <= '1';
+          monpro_started_next <= '0';
+          next_state          <= SECOND_LOOP_CALC;
+        else
+          next_state <= FIRST_LOOP_CALC;
+        end if;
+
+      when SECOND_LOOP_CALC =>
+        monpro_mux_1_en1 <= '0';
+        monpro_mux_1_en2 <= '1';
+        monpro_mux_2_en1 <= '1';
+        monpro_mux_2_en2 <= '1';
+        if (counter < 128) then
+          if (eMSB = '1') then
+            if (monpro_coreFinished = '1' and monpro_started = '0') then
+              monpro_start        <= '1';
+              monpro_started_next <= '1';
+              next_state          <= SECOND_LOOP_CALC;
+            elsif (monpro_coreFinished = '1' and monpro_started = '1') then
+              R_reg_load_en       <= '1';
+              monpro_started_next <= '0';
+              next_state          <= FIRST_LOOP_CALC;
+              counter_next        <= counter + 1;
+              e_reg_shift_one_en  <= '1';
+              if (counter=127) then
+                next_state        <= POST_CALC;
+                counter_next      <=0;
+              end if;
+            else
+              next_state <= SECOND_LOOP_CALC;
+            end if;
+          else
+            counter_next       <= counter + 1;
+            next_state         <= FIRST_LOOP_CALC;
+            e_reg_shift_one_en <= '1';
+          end if;
+        else
+          next_state   <= POST_CALC;
+          counter_next <= 0;
+        end if;
+
+      when POST_CALC =>
+        monpro_mux_1_en1 <= '0';
+        monpro_mux_1_en2 <= '0';
+        monpro_mux_2_en1 <= '1';
+        monpro_mux_2_en2 <= '1';
+        if (monpro_coreFinished = '1' and monpro_started = '0') then
+          monpro_start        <= '1';
+          monpro_started_next <= '1';
+          next_state          <= POST_CALC;
+        elsif (monpro_coreFinished = '1' and monpro_started = '1') then
+          R_reg_load_en       <= '1';
+          monpro_started_next <= '0';
+          next_state          <= OUTPUT_DATA;
+        else
+          next_state <= POST_CALC;
+        end if;
+
+      when OUTPUT_DATA =>
+        R_reg_shift_en <= '1';
+        if (counter>0) then
+          coreFinished<='1';
+        end if;
+        if (counter < 3) then
+          counter_next <= counter + 1;
+          next_state   <= OUTPUT_DATA;
+        else
+          counter_next <= 0;
+          next_state   <= IDLE;
+        end if;
+    end case;
   end process;
-  
 end Behavioral;
 
-
-
---architecture Behavioral of u_rsa_controller is
---    type state is (IDLE,LOAD_KEYS,LOAD_MESSAGE,RUN_FIRST_PRECALC,RUN_SECOND_PRECALC,RUN_FIRST_LOOP_CALC,RUN_SECOND_LOOP_CALC,RUN_POSTCALC,OUTPUT_DATA);
---    signal curr_state : state;
---    signal waiting_for_monpro   : std_logic;
---    signal substate_counter: integer range 0 to 130;
---begin
---    process(curr_state,substate_counter,clk,resetN,initRsa,startRsa,monpro_coreFinished,eMSB) begin
---        if (resetN='0') then
---            monpro_mux_1_en1  <='0';
---            monpro_mux_1_en2    <='0';
---            monpro_mux_2_en1    <='0';
---            monpro_mux_2_en2    <='0';
---            Y_reg_shift_en      <='0';
---            X_reg_shift_en      <='0';
---            e_reg_shift_en      <='0';    
---            e_reg_shift_one_en  <='0';    
---            n_reg_shift_en      <='0';
---            M_reg_shift_en      <='0';    
---            R_reg_load_en       <='0';    
---            R_reg_shift_en      <='0';    
---            P_reg_load_en       <='0';   
---            monpro_start        <='0';
---            coreFinished        <='1';
---            substate_counter    <=0;
---            curr_state          <=IDLE;
---            waiting_for_monpro  <='0';
---        elsif(clk'event and clk='1') then
---            --pulsed signals
---            R_reg_load_en       <='0';
---            P_reg_load_en       <='0';
---            e_reg_shift_one_en  <='0';
---            monpro_start        <='0';
-
---            case (curr_state) is
---            when IDLE =>
---                if (initRsa='1') then
---                    curr_state<=LOAD_KEYS;
---                elsif(startRsa='1') then
---                    curr_state<=LOAD_MESSAGE;
---                end if;
-
---            when LOAD_KEYS =>
---                coreFinished<='0';
---                Y_reg_shift_en<='1';
---                X_reg_shift_en<='1';
---                n_reg_shift_en<='1';
---                e_reg_shift_en<='1';
---                if (substate_counter<15) then
---                    substate_counter<=substate_counter+1;
---                else
---                    coreFinished<='1';
---                    substate_counter<=0;
---                    Y_reg_shift_en<='0';
---                    X_reg_shift_en<='0';
---                    n_reg_shift_en<='0';
---                    e_reg_shift_en<='0';
---                    curr_state<= IDLE;
---                end if;
-
---            when LOAD_MESSAGE =>
---                coreFinished<='0';
---                M_reg_shift_en<='1';
---                if (substate_counter<3) then
---                    substate_counter<=substate_counter+1;
---                else
---                    M_reg_shift_en<='0';
---                    substate_counter<=0;
---                    curr_state<=RUN_FIRST_PRECALC;
---                end if;
-
---            when RUN_FIRST_PRECALC =>
---                --monpro_1 = Y
---                monpro_mux_1_en1<='1';
---                monpro_mux_1_en2<='1';
---                --monpro_2 = m
---                monpro_mux_2_en1<='1';
---                monpro_mux_2_en2<='0';
-----                if (monpro_coreFinished'event and monpro_coreFinished='1') then
-----                    --save result in P
-----                    P_reg_load_en<='1';
-----                    curr_state<=RUN_SECOND_PRECALC;
-----                end if;
---                --if (not rising_edge(monpro_coreFinished) and monpro_coreFinished='1') then
---                --    monpro_start<='1';
---                --end if;
-
---            when RUN_SECOND_PRECALC =>
---                --monpro_1 = Y
---                monpro_mux_1_en1<='1';
---                monpro_mux_1_en2<='1';
---                --monpro_2 = 1
---                monpro_mux_2_en1<='0';
---                monpro_mux_2_en2<='0';
-
-----                if (monpro_coreFinished'event and monpro_coreFinished='1') then
-----                    --save result in R
-----                    R_reg_load_en<='1';
-----                    curr_state<=RUN_FIRST_LOOP_CALC;
-----                end if;
---                --if (not rising_edge(monpro_coreFinished) and monpro_coreFinished='1') then
---                --    monpro_start<='1';
---                --end if;
-
---            when RUN_FIRST_LOOP_CALC =>
---                --monpro_1=R
---                monpro_mux_1_en1<='1';
---                monpro_mux_1_en2<='0';
---                --monpro_2=R
---                monpro_mux_2_en1<='1';
---                monpro_mux_2_en2<='1';
-----                if (monpro_coreFinished'event and monpro_coreFinished='1') then
-----                    --save result in R
-----                    R_reg_load_en<='1';
-----                    curr_state<=RUN_SECOND_LOOP_CALC;
-----                end if;
---                --if (not rising_edge(monpro_coreFinished) and monpro_coreFinished='1') then
---                --    monpro_start<='1';
---                --end if;
-
---            when RUN_SECOND_LOOP_CALC =>
---                if(substate_counter<128) then
---                    if(eMSB='1') then
---                        --monpro_1=P
---                        monpro_mux_1_en1<='0';
---                        monpro_mux_1_en2<='1';
---                        --monpro_2=R
---                        monpro_mux_2_en1<='1';
---                        monpro_mux_2_en2<='1';
-----                        if (monpro_coreFinished'event and monpro_coreFinished='1') then
-----                            --save result in R
-----                            R_reg_load_en<='1';
-----                            curr_state<=RUN_FIRST_LOOP_CALC;
-----                            e_reg_shift_one_en<='1';
-----                            substate_counter<=substate_counter+1;
-----                        end if;
---                        --if (not rising_edge(monpro_coreFinished) and monpro_coreFinished='1') then
---                        --    monpro_start<='1';
---                        --end if;
---                    else
---                        substate_counter<=substate_counter+1;
---                        curr_state<=RUN_FIRST_LOOP_CALC;
---                        e_reg_shift_one_en<='1';
---                    end if;
---                else
---                    curr_state<=RUN_POSTCALC;
---                    substate_counter<=0;
---                end if;
-
---            when RUN_POSTCALC =>
---                --monpro_1 = 1
---                monpro_mux_1_en1<='0';
---                monpro_mux_1_en2<='0';
---                --monpro_2 = R
---                monpro_mux_2_en1<='1';
---                monpro_mux_2_en2<='1';
-
-----                if (monpro_coreFinished'event and monpro_coreFinished='1') then
-----                    --save result in R
-----                    R_reg_load_en<='1';
-----                    coreFinished<='1';
-----                    curr_state<=OUTPUT_DATA;
-----                end if;
---                --if (not rising_edge(monpro_coreFinished) and monpro_coreFinished='1') then
---                --    monpro_start<='1';
---                --end if;
-
---            when OUTPUT_DATA =>
---                R_reg_shift_en<='1';
---                if (substate_counter<4) then
---                    substate_counter<=substate_counter+1;
---                else 
---                    substate_counter<=0;
---                    curr_state<=IDLE;
---                    R_reg_shift_en<='0';
---                end if;
---            end case;
---        end if;
---    end process;
---end Behavioral;
