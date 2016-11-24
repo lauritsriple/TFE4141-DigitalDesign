@@ -1,3 +1,10 @@
+-- *********************************************************************
+-- Filename: RSAParameters.vhd
+-- Name: RSA parameters
+-- Description:
+-- Constants used in the RSA module is defined here.
+-- *********************************************************************
+
 library ieee;
 use ieee.std_logic_1164.all;
 

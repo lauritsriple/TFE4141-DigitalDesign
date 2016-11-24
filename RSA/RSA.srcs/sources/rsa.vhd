@@ -1,10 +1,10 @@
--- ***************************************************************************
+-- ************************************************************************
 -- Filename: rsa.vhd
 -- Name: RSA top module
 -- Description:
--- This module connects the datapath and controll logic
+-- This module connects the datapath and control logic
 -- and acts as the top module with interfaceable signals
--- ***************************************************************************
+-- ************************************************************************
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;

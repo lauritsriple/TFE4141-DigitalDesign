@@ -1,10 +1,10 @@
--- **************************************************************************
+-- ***********************************************************************
 -- Name:     RSACoreTestBench.vhd   
 -- Project:  RSACore
 -- Created:  03.10.04
--- Author:   Øystein Gjermundnes
+-- Author:   OEystein Gjermundnes
 -- Purpose:  A small testbench for the RSACore.
--- **************************************************************************
+-- ***********************************************************************
 library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.NUMERIC_STD.all;
@@ -21,9 +21,9 @@ end RSACoreTestBench;
 
 architecture struct of RSACoreTestBench is
 
-  -- ------------------------------------------------------------------------
+  -- ---------------------------------------------------------------------
   -- Signal declarations
-  -- ------------------------------------------------------------------------
+  -- ---------------------------------------------------------------------
   signal Clk          : std_logic;
   signal Resetn       : std_logic;
   signal InitRsa      : std_logic;

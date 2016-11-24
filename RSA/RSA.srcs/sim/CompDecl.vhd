@@ -1,4 +1,9 @@
-
+-- *********************************************************************
+-- Filename: CompDecl.vhd
+-- Name: Component declaration
+-- Description:
+-- This module defines a component used in the testbench.
+-- *********************************************************************
 library ieee;
 use ieee.std_logic_1164.all;
 library work;

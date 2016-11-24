@@ -1,3 +1,10 @@
+-- *********************************************************************
+-- Filename: RSA_Monpro_tb.vhd
+-- Name: Test bench for monpro
+-- Description:
+-- This is a testbench for the monpro module.
+-- *********************************************************************
+
 library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -14,9 +21,9 @@ end RSA_Monpro_TB;
 
 architecture struct of RSA_Monpro_TB is
 
-  -- ------------------------------------------------------------------------
+  -- ---------------------------------------------------------------------
   -- Signal declarations
-  -- ------------------------------------------------------------------------
+  -- ---------------------------------------------------------------------
   signal Clk          : std_logic;
   signal Resetn       : std_logic;
   signal startMonpro  : std_logic;
