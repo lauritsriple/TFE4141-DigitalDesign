@@ -11,6 +11,7 @@ use IEEE.NUMERIC_STD.all;
 
 entity u_rsa_datapath is
   port (
+    clk    : in std_logic;
     resetN : in std_logic;
 
     -- Data input interface
