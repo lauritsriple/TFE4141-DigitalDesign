@@ -1,11 +1,16 @@
+-- ***************************************************************************
+-- Filename: u_rsa_datapath.vhd
+-- Name: RSA datapath
+-- Description:
+-- This module descripes the datapath of the RSA module
+-- ***************************************************************************
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 
 entity u_rsa_datapath is
   port (
-    -- Clocks and reset
-    clk    : in std_logic;
     resetN : in std_logic;
 
     -- Data input interface
@@ -39,7 +44,7 @@ end u_rsa_datapath;
 
 architecture Behavioral of u_rsa_datapath is
   signal Y_reg           : std_logic_vector(127 downto 0);
-  signal X_reg           : std_logic_vector(127 downto 0);  --Can be removed but needs more control logic
+  signal X_reg           : std_logic_vector(127 downto 0);
   signal n_reg           : std_logic_vector(127 downto 0);
   signal e_reg           : std_logic_vector(127 downto 0);
   signal M_reg           : std_logic_vector(127 downto 0);
@@ -51,7 +56,7 @@ architecture Behavioral of u_rsa_datapath is
 
 begin
   -- ***************************************************************************
-  -- REGISTERS Y->X->n->e
+  -- INPUT REGISTERS clocks in this direction Y->X->n->e
   -- ***************************************************************************
   -- Register Y_reg (R**2modn)
   -- ***************************************************************************
@@ -62,8 +67,6 @@ begin
       Y_reg_shift_out <= (others => '0');
     elsif(clk'event and clk = '1') then
       if (Y_reg_shift_en = '1') then
-        -- Shifts in and shifts out
-        --Y_reg_shift_out <= Y_reg(31 downto 0);
         Y_reg <= dataIn & Y_reg(127 downto 32);
       end if;
     end if;
@@ -80,8 +83,6 @@ begin
       X_reg_shift_out <= (others => '0');
     elsif(clk'event and clk = '1') then
       if (X_reg_shift_en = '1') then
-        -- Shifts in and shifts out
-        --X_reg_shift_out <= X_reg(31 downto 0);
         X_reg <= Y_reg_shift_out & X_reg(127 downto 32);
       end if;
     end if;
@@ -89,7 +90,7 @@ begin
   end process;
 
   -- ***************************************************************************
-  -- Register n_reg/monpro_3 
+  -- Register n_reg/monpro_3
   -- ***************************************************************************
   monpro_3 <= n_reg;
   process(clk, resetN, n_reg)
@@ -99,8 +100,6 @@ begin
       n_reg_shift_out <= (others => '0');
     elsif(clk'event and clk = '1') then
       if (n_reg_shift_en = '1') then
-        -- Shifts in and shifts out
-        --n_reg_shift_out <= n_reg(31 downto 0);
         n_reg <= X_reg_shift_out & n_reg(127 downto 32);
       end if;
     end if;
@@ -108,7 +107,7 @@ begin
   end process;
 
   -- ***************************************************************************
-  -- Register e_reg 
+  -- Register e_reg
   -- ***************************************************************************
   eMSB <= e_reg(127);
   process(clk, resetN)
@@ -117,8 +116,6 @@ begin
       e_reg <= (others => '0');
     elsif(clk'event and clk = '1') then
       if (e_reg_shift_en = '1') then
-        -- Shifts in and shifts out
-        --e_reg_shift_out <= e_reg(31 downto 0); -- Not needed since the we dont have to shift this out
         e_reg <= n_reg_shift_out & e_reg(127 downto 32);
       elsif (e_reg_shift_one_en = '1') then  --left shift
         e_reg <= e_reg(126 downto 0) & e_reg(127);
@@ -202,5 +199,5 @@ begin
     end if;
   end process;
 
--- monpro_3 is n_reg, does not need a process to assign it, since it always the same, Just port it out
+  -- monpro_3 is n_reg, does not need a process to assign it, since it always the same, Just port it out
 end Behavioral;

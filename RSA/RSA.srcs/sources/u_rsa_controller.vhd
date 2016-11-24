@@ -1,3 +1,10 @@
+-- ***************************************************************************
+-- Filename: u_rsa_controller.vhd
+-- Name: RSA Controller
+-- Description:
+-- This modules describes the control logic of the RSA module
+-- ***************************************************************************
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
@@ -236,4 +243,3 @@ begin
     end case;
   end process;
 end Behavioral;
-

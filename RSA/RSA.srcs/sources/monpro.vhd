@@ -1,8 +1,13 @@
+-- ***************************************************************************
+-- Filename: monpro.vhd
+-- Name: Monpro top module
+-- Description:
+-- This module connects the datapath and controll logic
+-- and acts as the top module with interfaceable signals
+-- ***************************************************************************
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
-
--- Monpro top module
--- This module connects the datapath and controll path of the monpro module.
 
 entity monpro is
   port (
@@ -23,7 +28,6 @@ entity monpro is
 end monpro;
 
 architecture rtl of monpro is
-  --signals here
   signal M_reg_load_en  : std_logic;
   signal M_reg_clear    : std_logic;
   signal B_reg_load_en  : std_logic;
@@ -55,7 +59,6 @@ begin
     B0             => B0,
     M0             => M0,
 
-
     --Data out interface
     result => result
     );
@@ -82,6 +85,3 @@ begin
     M0             => M0
     );
 end rtl;
-
-
-
