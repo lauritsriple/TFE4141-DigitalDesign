@@ -1,6 +1,13 @@
+-- ***************************************************************************
+-- Filename: rsa.vhd
+-- Name: RSA top module
+-- Description:
+-- This module connects the datapath and controll logic
+-- and acts as the top module with interfaceable signals
+-- ***************************************************************************
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
---use IEEE.NUMERIC_STD.ALL;
 
 entity RSACore is
   port (
@@ -80,9 +87,7 @@ begin
     clk    => Clk,
     resetN => Resetn,
 
-    -- ***************************************************************************
     -- Control inputs from u_rsa_datapath
-    -- ***************************************************************************
     monpro_mux_1_en1 => monpro_mux_1_en1,
     monpro_mux_1_en2 => monpro_mux_1_en2,
     monpro_mux_2_en1 => monpro_mux_2_en1,
@@ -100,15 +105,11 @@ begin
 
     eMSB => eMSB,
 
-    -- ***************************************************************************
     -- Control inputs/outputs to MONPRO
-    -- ***************************************************************************
     monpro_start        => monpro_start,
     monpro_coreFinished => monpro_coreFinished,
 
-    -- ***************************************************************************
     -- Control inputs/outputs from RSA
-    -- ***************************************************************************
     initRsa      => InitRsa,
     startRsa     => StartRsa,
     coreFinished => CoreFinished

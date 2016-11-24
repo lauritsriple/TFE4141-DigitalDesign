@@ -19,10 +19,13 @@
 \usepackage{parskip}
 \usepackage{float}
 \usepackage{graphicx}
-\usepackage{listings}
 \usepackage[a4paper]{geometry}
 \usepackage{cleveref}
 \usepackage{todonotes}
+\usepackage{appendix}
+\usepackage{minted}
+\setminted[VHDL]{frame=lines, linenos}
+\setminted[text]{frame=lines, linenos, breaklines=true}
 
 \title{Design of Digital Systems 1 - Term Project}
 \author{
@@ -58,5 +61,6 @@
 \input{discussion}
 \newpage
 \input{references}
-
+\newpage
+\input{appendix}
 \end{document}

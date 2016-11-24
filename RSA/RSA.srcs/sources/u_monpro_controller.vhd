@@ -1,16 +1,24 @@
+-- ***************************************************************************
+-- Filename: u_monpro_controller.vhd
+-- Name: Monpro controller
+-- Description:
+-- This file sets up the controller of the monpro module
+-- ***************************************************************************
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.numeric_std.all;
 
 entity u_monpro_controller is
   port (
-    -- Clocks and resets
     clk    : in std_logic;
     resetN : in std_logic;
 
     -- Datapath control signals
-    mux1           : out std_logic;     -- the mux that chooses between A and n
-    mux2           : out std_logic;  -- the mux that chooses between sum and sum >> 1
+	-- the mux that chooses between A and n
+    mux1           : out std_logic;
+	-- the mux that chooses between sum and sum >> 1
+	mux2           : out std_logic;
     M_reg_load_en  : out std_logic;
     M_reg_clear    : out std_logic;
     B_reg_load_en  : out std_logic;
