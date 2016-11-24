@@ -6,7 +6,7 @@ $p$ and $q$ are to random large prime numbers, and $n$ can be calculated by mult
 them together, $n=pq$. $e$ is the public exponent and has to be in the range $1<e<\phi(n)$ 
 such that $gcd(e,\phi(n))=1$. $\phi(n)$ is Euler's totient function of n, given by
 \begin{equation}
-    \phi(n)=(p-1)(q-)
+    \phi(n)=(p-1)(q-1)
 \end{equation}
 The private exponent, $d$, is obtained by inverting $e$ $modulo$ $\phi(n)$, i.e
 \begin{equation}
@@ -26,14 +26,17 @@ as used to send encrypted messages.
 
 \subsection{Describe the problem you are trying to solve}
 The problem with implementing this in hardware on an FPGA is that the exponential multiplication
-$A^B$ can be very computational heavy, depending on the choosen algorithm. With a keysize of 55,
-the easiest method is to just muliply $A$ with $A$ 55 times. This requires 54 multiplication
+$M^n$ can be very computational heavy, depending on the choosen algorithm. With a keysize of 55,
+the easiest method is to just muliply $n$ with $n$ 55 times. This requires 54 multiplication
 operations, and would take a very long time with large numbers. This is a brute-force approach
-and has complexity $O(E)$. Another approach is using repeated squaring. With $E$ written as binary
-number,$E=55=0x37=0b00110111$, it can be written as a sum of squared exponents of 2, 
-$E=0*2^7 + 0*2^6 + 1*2^5 + 1*2^4 + 1*2^2 + 1*2^1 + 1*2^0=55$. The exponential multiplication can 
-now be written as $M^{55}=M^{0*2^7 + 0*2^6 + 1*2^5 + 1*2^4 + 1*2^2 + 1*2^1 + 1*2^0} = M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0}$. 
-From this 
+and has complexity $O(n)$. Another approach is using repeated squaring. With $n$ written as binary a
+number,$n=55=0x37=0b00110111$, it can be written as a sum of squared exponents of 2, 
+$E=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. The exponential multiplication can now be written as
+\begin{equation}
+M^{55}=M\exp(0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0) 
+= M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0} 
+\end{equation}
+From this it is easy to see a patt
 \subsection{What are the main requirements?}
 \subsection{What do you need to investigate further before proposing a solution?}
 \subsection{Discuss/Analyze/Conclude}
