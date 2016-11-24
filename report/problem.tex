@@ -26,18 +26,56 @@ as used to send encrypted messages.
 
 \subsection{Describe the problem you are trying to solve}
 The problem with implementing this in hardware on an FPGA is that the exponential multiplication
-$M^n$ can be very computational heavy, depending on the choosen algorithm. With a keysize of 55,
-the easiest method is to just muliply $n$ with $n$ 55 times. This requires 54 multiplication
+$M^k$ can be very computational heavy, depending on the choosen algorithm. With a keysize of 55,
+the easiest method is to just muliply $k$ with $k$ 55 times. This requires 54 multiplication
 operations, and would take a very long time with large numbers. This is a brute-force approach
-and has complexity $O(n)$. Another approach is using repeated squaring. With $n$ written as binary a
-number,$n=55=0x37=0b00110111$, it can be written as a sum of squared exponents of 2, 
-$E=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. The exponential multiplication can now be written as
+and has complexity $O(k)$. Another approach is using repeated squaring. With $k$ written as binary a
+number,$k=55=0x37=0b00110111$, it can be written as a sum of squared exponents of 2, 
+$k=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. The exponential multiplication can now be written as
+
 \begin{equation}
-M^{55}=M\exp(0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0) 
-= M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0} 
+    M^{55}=M\exp(0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0) 
+    = M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0} 
 \end{equation}
-From this it is easy to see a patt
+
+From this it is easy to see a pattern, and the multiplication can be simplified to this pseudocode
+\begin{lstlisting}
+    C=1
+    P=M
+    for i in range(0,k-1), where k=number of bits
+        if Ei:
+            C=C*P
+        P=P*P
+    return C
+\end{lstlisting}
+
+Now, the number of mulitplications on the example values has been reduced to 15 multiplications, but this is just one part of the problem to be solved. $M^k$ can be solved fairly easy, but what about $A^k \mod{n}$. There exists multiple algorithms to do this calculation, and
 \subsection{What are the main requirements?}
+The RSA encryption/decryption circuit is to meet the following requrirements 
+\begin{itemize}
+    \item The design must implement the RSA encryption algorithm.
+    \item Encrypt/decrypt a message of length 128 bits as fast as possible.
+    \item The target frequency is 50 MHz.
+    \item The design must use less than 50 \% of the resources in a
+        \emph{Xilinx Zynq\textregistered-7000} device.
+    \item The design entity declaration must match the entity given in \cref{listing:RSAcore_entity}.
+    \item The design must implement the interface in \cref{fig:interface_protocol}
+\end{itemize}
+
+\begin{lstlisting}
+entity RSACore is
+    port (
+        Clk          : in std_logic;
+        Resetn       : in std_logic;
+        InitRsa      : in std_logic;
+        StartRsa     : in std_logic;
+        DataIn       : in std_logic_vector(31 downto 0);
+        DataOut      : out std_logic_vector(31 downto 0);
+        CoreFinished : out std_logic
+    );
+end RSACore;
+\end{lstlisting}
+
 \subsection{What do you need to investigate further before proposing a solution?}
 \subsection{Discuss/Analyze/Conclude}
 
