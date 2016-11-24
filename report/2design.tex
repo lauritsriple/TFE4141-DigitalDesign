@@ -1,0 +1,139 @@
+\section{Design exploration and presentation of solution}
+\subsection{Evaluate a couple of different alternatives}\label{sec:differentAlternatives}
+\todo[inline]{litt om Blakely og mye om montgommery}
+Different algorithms of solving the modular exponential multiplication already exists. The problem with implementing such algorithms on a FPGA is that calculating $P=C^d\mod{n}$ and $C=P^e\mod{n}$, now referred to as $M^k\mod{n}$ can be very time consuming, so some sort of simplification or transformation of the algortihm is needed to make it run faster on a FPGA. It is possible to reduce the number of calculations needed to find $M^k$. With a keysize of 55, the easiest method is to just multiply the base with itself 54 times. This requires 54 multiplication operations, and would take a very long time with large numbers. This is a brute-force approach and has complexity $O(k)$. This approach is not ideal, but with some simple binary simplification we can write the exponent as $k=55=0x37=0b00110111$. This simplifies further when writing it as a sum of squared exponents of 2, $k=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. With this simplification $M^k$ can be written as:
+%
+\begin{equation}\label{Mexponential}
+    M^{55}=M\exp(0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0) 
+    = M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0} 
+\end{equation}
+%
+The pseudocode for this approach can be written as
+%
+\begin{lstlisting}
+    C=1
+    P=M
+    for i in range(0,k-1), where k=number of bits
+        if Ki:
+            C=C*P
+        P=P*P
+    return C
+\end{lstlisting}
+%
+which should be fairly easy to see from \cref{Mexponential}. This change reduced the needed multiplications from 54 to 15, which is a significant decreased number of calculations.
+Multiplication of to nonnegative integers, $A$ and $B$, with bitsize, $k$ can be done with the following pseudocode
+%
+\begin{lstlisting}
+    P=0
+    for i in range(0,k-1), where k=number of bits
+        if B[k-1-i]:
+            P=2P+A
+        else
+            P=2P
+    return P
+\end{lstlisting}
+And exponential modular multiplication, $A\cdot B\mod{n}$ can be done by expanding the pseudocode for multiplicating $A*B$ to
+\begin{lstlisting}
+    P=0
+    for i in range(0,k-1),where k=number of bits
+        if B[k-1-i]:
+            P=2P+A
+        else:
+            P=2P
+        //Reduce P to be 0<=P<=n-1
+        if P>=n:
+            P=P-n
+        if P>=n:
+            P=P-n
+    return P
+\end{lstlisting}
+%
+where the need for the multiplication and modular arithmetic has been simplified to add and subtract, based on bits in B. This method is called Blakley's Method. 
+%
+In 1985, P.L. Montgomery introduced an efficient algorithm for computing $AB\mod{n}$. The algorithm is suitable for implementation on general-purpose computers which are capable of performing fast arithmetic modulo a power of 2. This algorithm replaces the need for division by n operation with division by a power of 2. This can be done because the original $AB\mod{n}$ has been mapped to a "montgomery plane". Given two n-residues $\bar{a}$ and $\bar{b}$, the Montgomery product is defined as the n-residue
+%
+\begin{equation}
+    \bar{R}=\bar{a} \cdot \bar{b} \cdot r^{-1} \mod{n}
+\end{equation}
+%
+where $r^{-1}$ is the inverse of $r\mod{n}$, i.e., it is the number with the property
+%
+\begin{equation}
+    r^{-1} \cdot r=1\mod{n}.
+\end{equation}
+%
+The resulting number $\bar{R}$ is indeed the n-residue pf the product
+%
+\begin{equation}
+    R=a \cdot b\mod{n}   
+\end{equation}
+%
+since
+%
+\begin{align}
+    \bar{R} &=\bar{a} \cdot \bar{b} \cdot r^{-1} \mod{n}\\
+    \bar{R} &=a\cdot r \cdot b \cdot r \cdot r^{-1} \mod{n}\\
+    \bar{R} &=a\cdot b \cdot r \mod{n}
+\end{align}
+%
+In order to describe the Montgomery reduction algorithm, an additional quantity, $n'$, with the property $r \cdot r^{-1} -n \cdot n' =1$ is needed. The integers $r^{-1}$ and $n'$ can both be computed by the extended Euclidean algorithm. The Montgomery product algorithm, which computes
+\begin{equation}
+    u=\bar{a} \cdot \bar{b} \cdot r^{-1}
+\end{equation}
+is given below:
+\begin{lstlisting}
+    monPro(a_,b_)
+        Compute n' using the extended Euclidean algorithm
+        t = a_ * b_
+        m = t*n' mod r
+        u = (t + m * n)/r
+        if u >= n:
+            return u - n
+        else
+            return u
+\end{lstlisting}
+%
+The important feature of the Montogmery product algorithm is that all the operations involved are multiplications modulo r and divisions by r, both of which are very fast operations since r is a power of 2. The monPro algorithm can be used to compute the product $a \cdot b \mod{n}$ given that $n$ is odd. This is a rather time consuming operation when a single modular multiplication is needed because the preprocessing operations, especially the computation of $n'$, are rather time consuming.
+
+The Mongomery product algorithm is more suitable when several modular multiplications with respect to the same modulus are needed. Such is the case when one needs to compute a modular exponentiation, i.e., the computation of $C=P^e\mod{n}$. Replacing the modular exponentiation operation with multiple square and multiply operations modulo n, makes the Montgomery product function come to it's best use. The pseudocode for the Montogmery modular exponentiation can be found below.
+\begin{lstlisting}
+    modExp(M,e,n) 
+        Compute n' using the extended Euclidean algorithm
+        M_=M*r*mod(n)
+        x_=1*r*mod(n)
+        for i in range (k-1 downto 0)
+            x_=monPro(x_,x_)
+            if e[i]:
+                x_=monPro(M_,x_)
+        x_=monPro(x_,1)
+        return x_
+\end{lstlisting}
+%
+Both the monPro and the modExp functions can be further optimized for the specific 128 bit RSA cryptosystem 
+
+\todo[inline]{THIS SHOULD BE MOVED TO 2.1}
+but this is just one part of the problem to be solved. $M^k$ can be solved fairly easy, but what about $A^k \mod{n}$. There already exists multiple algorithms to do this calculation, but the focus in this report will be to solve it using the Montgomery method. The exponentiation operation is a succession of modular products, and it is clear that the efficiency of this is going to determine the performance of the system. The Montgomery method focuses on doing the modular multiplication in an effective way. The MonPro function calculates the Montgomery Multiplication:
+\begin{equation}
+    MonPro(A,B,n)=ABr^{-1}\mod{n}
+\end{equation}
+where $r$ is $2^k$, and k is the number of bits in the key. The pseudocode of this algorithm is:
+\begin{lstlisting}
+    MonPro(A,B,n):
+        M=0
+        for i in range(0,128):
+            if Bi:
+                M=M+A
+            if M0:
+                M=M+n
+            M=M/2
+        if M>=n:
+            M=M-n
+        return M
+\end{lstlisting}
+END MOVING
+\subsection{Present the architecture of the proposed solution/design.}
+\todo[inline]{BLOCKDIAGRAM with description + pseudocode model}
+\subsection{Analyze/Estimate performance and area}
+\todo[inline]{Matte, k-1 antall cykler + hvor mange rgistre vi bruker gir estimat av performance og størrelse}
+\subsection{Discuss/Analyze/Conclude}
+\todo[inline]{Noe om at vi kan være fornøyde med denne framgangsmåten}
