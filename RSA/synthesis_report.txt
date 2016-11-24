@@ -1,0 +1,338 @@
+#-----------------------------------------------------------
+# Vivado v2015.2 (64-bit)
+# SW Build 1266856 on Fri Jun 26 16:35:25 MDT 2015
+# IP Build 1264090 on Wed Jun 24 14:22:01 MDT 2015
+# Start of session at: Thu Nov 24 15:31:03 2016
+# Process ID: 5140
+# Log file: Z:/NTNU/TFE4141/Project/RSA/RSA.runs/synth_1/RSACore.vds
+# Journal file: Z:/NTNU/TFE4141/Project/RSA/RSA.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source RSACore.tcl -notrace
+Command: synth_design -top RSACore -part xc7z045ffg900-2
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z045'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z045'
+INFO: [Common 17-1223] The version limit for your license is '2016.10' and will expire in -24 days. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:06 . Memory (MB): peak = 253.195 ; gain = 73.750
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'RSACore' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/rsa.vhd:26]
+INFO: [Synth 8-638] synthesizing module 'u_rsa_datapath' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_rsa_datapath.vhd:46]
+INFO: [Synth 8-256] done synthesizing module 'u_rsa_datapath' (1#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_rsa_datapath.vhd:46]
+INFO: [Synth 8-638] synthesizing module 'u_rsa_controller' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_rsa_controller.vhd:44]
+INFO: [Synth 8-4512] found unpartitioned construct node [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_rsa_controller.vhd:134]
+INFO: [Synth 8-256] done synthesizing module 'u_rsa_controller' (2#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_rsa_controller.vhd:44]
+INFO: [Synth 8-638] synthesizing module 'monpro' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/monpro.vhd:30]
+INFO: [Synth 8-638] synthesizing module 'u_monpro_datapath' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_monpro_datapath.vhd:36]
+INFO: [Synth 8-256] done synthesizing module 'u_monpro_datapath' (3#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_monpro_datapath.vhd:36]
+INFO: [Synth 8-638] synthesizing module 'u_monpro_controller' [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_monpro_controller.vhd:41]
+INFO: [Synth 8-256] done synthesizing module 'u_monpro_controller' (4#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/u_monpro_controller.vhd:41]
+INFO: [Synth 8-256] done synthesizing module 'monpro' (5#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/monpro.vhd:30]
+INFO: [Synth 8-256] done synthesizing module 'RSACore' (6#1) [Z:/NTNU/TFE4141/Project/RSA/RSA.srcs/sources/rsa.vhd:26]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 288.480 ; gain = 109.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:08 . Memory (MB): peak = 288.480 ; gain = 109.035
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z045ffg900-2
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:08 . Memory (MB): peak = 288.480 ; gain = 109.035
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7z045ffg900-2
+INFO: [Synth 8-802] inferred FSM for state register 'curr_state_reg' in module 'u_rsa_controller'
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "next_state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "next_state" won't be mapped to RAM because it is too sparse
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                     Old Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                             0000 |                             0000
+               load_keys |                             0001 |                             0001
+            load_message |                             0010 |                             0010
+           first_precalc |                             0011 |                             0011
+          second_precalc |                             0100 |                             0100
+         first_loop_calc |                             0101 |                             0101
+        second_loop_calc |                             0110 |                             0110
+               post_calc |                             0111 |                             0111
+             output_data |                             1000 |                             1000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'curr_state_reg' using encoding 'sequential' in module 'u_rsa_controller'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 341.391 ; gain = 161.945
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input    130 Bit       Adders := 1     
+	   3 Input    128 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 2     
++---Registers : 
+	              130 Bit    Registers := 1     
+	              128 Bit    Registers := 9     
+	               32 Bit    Registers := 1     
+	                8 Bit    Registers := 2     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input    130 Bit        Muxes := 2     
+	   2 Input    128 Bit        Muxes := 11    
+	   2 Input      8 Bit        Muxes := 6     
+	   9 Input      8 Bit        Muxes := 1     
+	  25 Input      4 Bit        Muxes := 1     
+	   5 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 9     
+	   9 Input      1 Bit        Muxes := 15    
+	   4 Input      1 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module u_rsa_datapath 
+Detailed RTL Component Info : 
++---Registers : 
+	              128 Bit    Registers := 7     
+	               32 Bit    Registers := 1     
++---Muxes : 
+	   2 Input    128 Bit        Muxes := 7     
+	   2 Input      1 Bit        Muxes := 2     
+Module u_rsa_controller 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 5     
+	   9 Input      8 Bit        Muxes := 1     
+	  25 Input      4 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 4     
+	   9 Input      1 Bit        Muxes := 15    
+Module u_monpro_datapath 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input    130 Bit       Adders := 1     
+	   3 Input    128 Bit       Adders := 1     
++---Registers : 
+	              130 Bit    Registers := 1     
+	              128 Bit    Registers := 2     
++---Muxes : 
+	   2 Input    130 Bit        Muxes := 2     
+	   2 Input    128 Bit        Muxes := 4     
+	   2 Input      1 Bit        Muxes := 2     
+Module u_monpro_controller 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	                8 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 1     
+	   5 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 8     
+	   2 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 900 (col length:140)
+BRAMs: 1090 (col length: RAMB18 140 RAMB36 70)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 496.430 ; gain = 316.984
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:11 ; elapsed = 00:00:14 . Memory (MB): peak = 497.660 ; gain = 318.215
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:11 ; elapsed = 00:00:14 . Memory (MB): peak = 497.660 ; gain = 318.215
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 537.910 ; gain = 358.465
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:15 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Static Shift Register:
++------------+-------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|Module Name | RTL Name                      | Length | Width | Reset Signal | Pull out first Reg | Pull out last Reg | SRL16E | SRLC32E | 
++------------+-------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|RSACore     | u_rsa_datapath/n_reg_reg[127] | 5      | 32    | YES          | NO                 | NO                | 32     | 0       | 
++------------+-------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY4 |    82|
+|3     |LUT1   |     3|
+|4     |LUT2   |   204|
+|5     |LUT3   |   367|
+|6     |LUT4   |   270|
+|7     |LUT5   |   272|
+|8     |LUT6   |   285|
+|9     |MUXF7  |     3|
+|10    |SRL16E |    32|
+|11    |FDCE   |  1213|
+|12    |FDRE   |    32|
+|13    |IBUF   |    36|
+|14    |OBUF   |    33|
++------+-------+------+
+
+Report Instance Areas: 
++------+------------------------+--------------------+------+
+|      |Instance                |Module              |Cells |
++------+------------------------+--------------------+------+
+|1     |top                     |                    |  2833|
+|2     |  monpro                |monpro              |  1428|
+|3     |    u_monpro_controller |u_monpro_controller |   293|
+|4     |    u_monpro_datapath   |u_monpro_datapath   |  1135|
+|5     |  u_rsa_controller      |u_rsa_controller    |    74|
+|6     |  u_rsa_datapath        |u_rsa_datapath      |  1261|
++------+------------------------+--------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:16 ; elapsed = 00:00:19 . Memory (MB): peak = 537.910 ; gain = 358.465
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:14 ; elapsed = 00:00:16 . Memory (MB): peak = 537.910 ; gain = 338.324
+Synthesis Optimization Complete : Time (s): cpu = 00:00:16 ; elapsed = 00:00:19 . Memory (MB): peak = 537.910 ; gain = 358.465
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 118 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+32 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:16 ; elapsed = 00:00:19 . Memory (MB): peak = 600.766 ; gain = 401.410
+report_utilization: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.140 . Memory (MB): peak = 600.766 ; gain = 0.000
+INFO: [Common 17-206] Exiting Vivado at Thu Nov 24 15:31:28 2016...
