@@ -20,48 +20,38 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/new/u_monpro_datapath.vhd">
+      <File Path="$PSRCDIR/sources/u_monpro_datapath.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/new/u_monpro_controller.vhd">
+      <File Path="$PSRCDIR/sources/u_monpro_controller.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/new/u_monpro_controller.vhd"/>
-          <Attr Name="ImportTime" Val="1479150669"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/u_rsa_controller.vhd">
+      <File Path="$PSRCDIR/sources/monpro.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/u_rsa_controller.vhd"/>
-          <Attr Name="ImportTime" Val="1479479731"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/u_rsa_datapath.vhd">
+      <File Path="$PSRCDIR/sources/u_rsa_controller.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/u_rsa_datapath.vhd"/>
-          <Attr Name="ImportTime" Val="1479482977"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/new/monpro.vhd">
+      <File Path="$PSRCDIR/sources/u_rsa_datapath.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/new/monpro.vhd"/>
-          <Attr Name="ImportTime" Val="1477939259"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/sdfdsf/rsa.vhd">
+      <File Path="$PSRCDIR/sources/rsa.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../sdfdsf/rsa.vhd"/>
-          <Attr Name="ImportTime" Val="1479482583"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -80,75 +70,24 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/RSAParameters.vhd">
+      <File Path="$PSRCDIR/sim/RSACoreTestBench.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/RSAParameters.vhd"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/CompDecl.vhd">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/CompDecl.vhd"/>
-          <Attr Name="ImportTime" Val="1130492206"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/RSACoreTestBench.vhd">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/RSACoreTestBench.vhd"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/sim_1/RSA_Monpro_tb.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/RSA_Monpro_tb.vhd"/>
-          <Attr Name="ImportTime" Val="1479120547"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/sim_1/RSAParameters.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/RSAParameters.vhd"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/sim_1/CompDecl.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PSRCDIR/sim_1/CompDecl.vhd"/>
-          <Attr Name="ImportTime" Val="1130492206"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/ComFile.txt">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/ComFile.txt"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/SmallComFileFasit.txt">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/SmallComFileFasit.txt"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/rsa_tb/SmallComFile.txt">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/student/Downloads/rsa_tb/SmallComFile.txt"/>
-          <Attr Name="ImportTime" Val="1099404264"/>
         </FileInfo>
       </File>
       <File Path="$PPRDIR/RSACoreTestBench_behav.wcfg">
         <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim/ComFile.txt"/>
+      <File Path="$PSRCDIR/sim/SmallComFileFasit.txt"/>
+      <File Path="$PSRCDIR/sim/SmallComFile.txt"/>
+      <File Path="$PSRCDIR/sim/RSA_Monpro_tb.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
