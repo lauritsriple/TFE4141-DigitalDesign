@@ -1,5 +1,51 @@
 \section{Problem Description and Analysis}
+The problem in this paper is to make an algorithm to encrypt and decrypt messages using the
+RSA algorithm and implement it on an fpga. The RSA algorithm was invented by Rivest, Shamir
+and Adleman in 1977. The algorithm consists of 5 parameters; $n$,$p$,$q$,$e$ and $d$. 
+$p$ and $q$ are to random large prime numbers, and $n$ can be calculated by multiplying 
+them together, $n=pq$. $e$ is the public exponent and has to be in the range $1<e<\phi(n)$ 
+such that $gcd(e,\phi(n))=1$. $\phi(n)$ is Euler's totient function of n, given by
+\begin{equation}
+    \phi(n)=(p-1)(q-)
+\end{equation}
+The private exponent, $d$, is obtained by inverting $e$ $modulo$ $\phi(n)$, i.e
+\begin{equation}
+    d=e^{-1}\mod{\phi(n)}
+\end{equation}
+The encryption operation is performed by computing
+\begin{equation}
+    C=M^e\mod{n}
+\end{equation}
+where M is the plaintext such that $0<=M<=n$. The number C is the ciphertext from 
+which the plaintext M can be computed using
+\begin{equation}
+    M=C^d\mod{n}
+\end{equation}
+The RSA algorithm can be used to produce signatures for electronic documents as well
+as used to send encrypted messages. 
+
 \subsection{Describe the problem you are trying to solve}
+The problem with implementing this in hardware on an FPGA is that the exponential multiplication
+$A^B$ can be very computational heavy, depending on the choosen algorithm. With a keysize of 55,
+the easiest method is to just muliply $A$ with $A$ 55 times. This requires 54 multiplication
+operations, and would take a very long time with large numbers. This is a brute-force approach
+and has complexity $O(E)$. Another approach is using repeated squaring. With $E$ written as binary
+number,$E=55=0x37=0b00110111$, it can be written as a sum of squared exponents of 2, 
+$E=0*2^7 + 0*2^6 + 1*2^5 + 1*2^4 + 1*2^2 + 1*2^1 + 1*2^0=55$. The exponential multiplication can 
+now be written as $M^{55}=M^{0*2^7 + 0*2^6 + 1*2^5 + 1*2^4 + 1*2^2 + 1*2^1 + 1*2^0} = M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0}$. 
+From this 
 \subsection{What are the main requirements?}
 \subsection{What do you need to investigate further before proposing a solution?}
 \subsection{Discuss/Analyze/Conclude}
+
+
+\subsection{KEYWORDS}
+Descirbe and FPGA
+Descirbe the rsa algorithm (history and math)
+Many ways to implement it on hardware
+Describe montgogemry in math and some bla,bla about the algorithm
+What is the strengths of doing this.
+
+Main requirements. How fast do we need it to be? How many bits etc.
+
+Investigate further. pytyhon model. reading other papers etc.
