@@ -63,7 +63,7 @@ begin
 
     case curr_state is
       when IDLE =>
-        M_reg_clear <= '1';
+        M_reg_clear  <= '1';
         coreFinished <= '1';
         if (startMonpro = '1') then
           next_state <= LOAD_B;
@@ -97,9 +97,9 @@ begin
           counter_next  <= counter + 1;
           next_state    <= CALC_MA;
         else
-          result_load_en <='1';
-          counter_next <= 0;
-          next_state   <= IDLE;
+          result_load_en <= '1';
+          counter_next   <= 0;
+          next_state     <= IDLE;
         end if;
     end case;
   end process;

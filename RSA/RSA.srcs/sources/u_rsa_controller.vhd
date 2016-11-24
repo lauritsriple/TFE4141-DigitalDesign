@@ -46,8 +46,8 @@ begin
   process (clk, resetN)
   begin
     if (resetN = '0') then
-      curr_state <= IDLE;
-      counter    <= 0;
+      curr_state     <= IDLE;
+      counter        <= 0;
       monpro_started <= '0';
     elsif (clk'event and clk = '1') then
       curr_state     <= next_state;
@@ -86,9 +86,9 @@ begin
           X_reg_shift_en <= '1';
           n_reg_shift_en <= '1';
           e_reg_shift_en <= '1';
-          next_state <= LOAD_KEYS;
+          next_state     <= LOAD_KEYS;
         elsif (startRsa = '1') then
-          M_reg_shift_en <= '1';        next_state <= LOAD_MESSAGE;
+          M_reg_shift_en <= '1'; next_state <= LOAD_MESSAGE;
         else
           next_state <= IDLE;
         end if;
@@ -187,9 +187,9 @@ begin
               next_state          <= FIRST_LOOP_CALC;
               counter_next        <= counter + 1;
               e_reg_shift_one_en  <= '1';
-              if (counter=127) then
-                next_state        <= POST_CALC;
-                counter_next      <=0;
+              if (counter = 127) then
+                next_state   <= POST_CALC;
+                counter_next <= 0;
               end if;
             else
               next_state <= SECOND_LOOP_CALC;
@@ -223,8 +223,8 @@ begin
 
       when OUTPUT_DATA =>
         R_reg_shift_en <= '1';
-        if (counter>0) then
-          coreFinished<='1';
+        if (counter > 0) then
+          coreFinished <= '1';
         end if;
         if (counter < 3) then
           counter_next <= counter + 1;
