@@ -1,6 +1,7 @@
 \section{Synthesis and test on FPGA}
 \subsection{Measure area and performance}
 \todo[inline]{Make a table with output from viavdo and server}
+\todo[inline]{Get WNS from vivado using  constraints}
 %\inputminted[linenos=0, firstline=82, lastline=102, frame=none]{text}{../RSA/synthesis_report.txt}
 %\inputminted[linenos=0, firstline=309, lastline=318, frame=none]{text}{../RSA/synthesis_report.txt}
 %
@@ -20,11 +21,12 @@
         \label{tab:cell_usage}
     \end{center}
 \end{table}
-
+%
 \begin{table}[htp]
     \begin{center}  
         \begin{tabular}{ l | c | c | r}
              Resource & Utilization & Available & Utilization \%  \\
+             \hline
              Slice LUTs & 1024 & 218600 & 0.47 \\
              Slice Registers & 1245 & 437200 & 0.28 \\
              IO & 69 & 362 & 19.06 \\
@@ -42,7 +44,27 @@
     \label{fig:utilization}
 \end{figure}
 
-\subsection{Prove that the design actually works on FPGA}
-\inputminted[linenos=0]{text}{../rocket.txt}
+\subsection{FPGA output}
+%\inputminted[linenos=0]{text}{../rocket.txt}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{images/rocket}
+    \caption{Output from test on the FPGA}
+    \label{fig:rocket}
+\end{figure}
 %
-\subsection{Discuss/Analyze/Conclude}
+\begin{table}[htp]
+    \begin{center}
+        \begin{tabular}{l | r}
+            Property              & Value              \\
+            \hline
+            Avg. cycles per block & 42512              \\
+            Number of latches     & 0                  \\
+            Logic cells used      & 1662               \\
+            fmax                  & 56.95 MHz          \\
+            Throughput            & 1340 blocks/second \\
+        \end{tabular}
+        \caption{Performance output from FPGA test}
+        \label{tab:fpga_performance}
+    \end{center}
+\end{table}

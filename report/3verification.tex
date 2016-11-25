@@ -2,7 +2,7 @@
 %
 \subsection{Verification plan}
 The verification plan for the system consists of creating a type I test bench
-\cite[p.244]{pedroni} for the monpro algorithm, the inner module in the Montgomery algorithm,
+\cite[p.244]{pedroni} for the monPro algorithm, the inner module in the Montgomery algorithm,
 and checking the results manually against the output from the Python script (\cref{app:python}).
 This allows for a fairly rigorous verification without the need for writing a fully
 automated test bench (type III/IV). 
@@ -28,14 +28,11 @@ project, a fairly small project, the process of making all the test benches, sin
 the processes are not identical would be rather time consuming and would have further 
 increased the overall complexity of the system. 
 
-\subsection{Verifying metrics}
-\todo[inline]{Topmodel handout given tb + testing on FPGA server}
-(pass rate, code coverage, functional coverage).
 The main verification metric for the system is pass rate of the individual test benches, 
 both in simulation and on the FPGA. Due to the size of the project (less than 1000 lines of 
 design sources) it is possible to say with confidence that both the code coverage and the 
 functional coverage is close to, if not 100 \%. 
-
+%
 \subsection{Bring up test strategy}
 The bring up strategy used to get this system up and running was a bottom-up strategy. The first module
 implemented was the inner monPro algorithm. Once that was verified with the testbench with different

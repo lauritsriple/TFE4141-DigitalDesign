@@ -95,7 +95,7 @@ is given below:
 %
 The important feature of the Montogmery product algorithm is that all the operations involved are multiplications modulo r and divisions by r, both of which are very fast operations since r is a power of 2. The monPro algorithm can be used to compute the product $a \cdot b \mod{n}$ given that $n$ is odd. This is a rather time consuming operation when a single modular multiplication is needed because the preprocessing operations, especially the computation of $n'$, are rather time consuming.
 
-The Mongomery product algorithm is more suitable when several modular multiplications with respect to the same modulus are needed. Such is the case when one needs to compute a modular exponentiation, i.e., the computation of $C=P^e\mod{n}$. Replacing the modular exponentiation operation with multiple square and multiply operations modulo n, makes the Montgomery product function come to it's best use. The pseudocode for the Montogmery modular exponentiation can be found below.
+The Mongomery product algorithm is more suitable when several modular multiplications with respect to the same modulus are needed. Such is the case when one needs to compute a modular exponentiation, i.e., the computation of $C=P^e\mod{n}$, which is the computation needed in the system. Replacing the modular exponentiation operation with multiple square and multiply operations modulo n, makes the Montgomery product function come to it's best use. The pseudocode for the Montgomery modular exponentiation can be found below.
 \begin{lstlisting}
     modExp(M,e,n) 
         Compute n' using the extended Euclidean algorithm
@@ -109,30 +109,74 @@ The Mongomery product algorithm is more suitable when several modular multiplica
         return x_
 \end{lstlisting}
 %
-Both the monPro and the modExp functions can be further optimized for the specific 128 bit RSA cryptosystem 
-
-\todo[inline]{THIS SHOULD BE MOVED TO 2.1}
-but this is just one part of the problem to be solved. $M^k$ can be solved fairly easy, but what about $A^k \mod{n}$. There already exists multiple algorithms to do this calculation, but the focus in this report will be to solve it using the Montgomery method. The exponentiation operation is a succession of modular products, and it is clear that the efficiency of this is going to determine the performance of the system. The Montgomery method focuses on doing the modular multiplication in an effective way. The MonPro function calculates the Montgomery Multiplication:
-\begin{equation}
-    MonPro(A,B,n)=ABr^{-1}\mod{n}
-\end{equation}
-where $r$ is $2^k$, and k is the number of bits in the key. The pseudocode of this algorithm is:
+The Montgomery Method is the method implemented in this report. It seems to have multiple advantages over Blakley Method, specially with larger keysizes. Since the problem is to solve a 128bit RSA cryptosystem it is hard to say whether this will be faster than Blakley, it all depends on how the system is implemented in hardware, and what kind of optimization one can do to the algorithm. 
+%
+%SUBSECTION!!!!!!!
+\subsection{Present the architecture of the proposed solution/design.}
+Both the monPro and the modExp functions can be further optimized for the specific 128 bit RSA cryptosystem, due to the extra parameters $Y=r^2 \mod{n}$ and $X=r\mod{n}$, that are sent in to the system. The modExp function can now be changed to a function where all sub calculations are using the monPro function. This makes the design easier, since there is need for fewer different calculations, and with one monPro function, all the needed calculations can be executed.
 \begin{lstlisting}
-    MonPro(A,B,n):
-        M=0
-        for i in range(0,128):
-            if Bi:
-                M=M+A
-            if M0:
-                M=M+n
-            M=M/2
-        if M>=n:
-            M=M-n
+    def modExp(Y,M,e,n):
+        P=monPro(Y,m)
+        R=monPro(Y,1)
+        for i in range(k-1 downto 0):
+            R = monPro(R,R)
+            if e[i]:
+                R = monPro(P,R)
+        R = monPro(1,R)
+        return R
+\end{lstlisting}
+This is the pseudocode used in the cryptosystem implemented in this report. The monPro function can also be simplified, to only use one adder and one shift operation during each iteration, and possible one subtracter at the end of the loop to make sure the result is within $0<M<n$. Both the adding and shifting are extremely fast on a FPGA. The pseudocode of the monPro function after these simplification is shown below.
+\begin{lstlisting}
+    def monPro(A,B,n):
+        M = 0 
+        for i in range(0 upto 128):
+            if B[i]:
+                M = M + A 
+            if M[0]:
+                M = M + n 
+            M = M >> 1
+        if M >= n:
+            M=M - n
         return M
 \end{lstlisting}
-END MOVING
-\subsection{Present the architecture of the proposed solution/design.}
-\todo[inline]{BLOCKDIAGRAM with description + pseudocode model}
+This pseudocode can be expressed with the Block diagram in \cref{fig:blockMonPro}. The monPro module needs three input data values, where two of them, $n$ and $A$ is stored in a register outside the module, and the last one $B$ has to be stored inside the module, because the monPro functions needs the ability to shift it to the right so it can get the $B[i]$ on each iteration. It would be possible to store $n$ and $A$ inside the module, but this would have increased the area, although it would not have any impact on the number of clock cycles since they would be loaded at the same time as $B$ gets loaded. Some of the registers around the adder had to be increased to 130 bit instead of 128 bit to prevent overflow. Since the module might be doing two add operation before it shifts, there might be overflow on both the add operations and thus the need for two extra bits. This can be seen in the vhdl code in the appendix.
+
+This module also has a control interface for the top module, with one start signal and a coreFinished signal. It takes in a start signal, after $A$,$B$ and $n$ are ready, and holds the coreFinished low during calculation. When coreFinished goes high, the result should be ready. The need for an init signal could have been implemented, but would make the module about one or two clock cycles slower during each calculation. Since the monPro module is running 259 times, it would have made the system slower. From the block diagram and the pseudocode one can see that it is possible to make this module a lot faster by skipping many iterations at the start. This can be done, because the module is just shifting zeroes, until $B[i]$ goes high for the first time. The
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/monpro}
+    \caption{Block diagram of the monPro function}
+    \label{fig:blockMonPro}
+\end{figure}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=0.3\textwidth]{images/monpro_fsm}
+    \caption{FSM state diagram of monPro}
+    \label{fig:fsmMonPro}
+\end{figure}
+
+
+
+The modExp module, which is the top module of the design, has the specified interface in \cref{listing:RSAcore_entity} and the block diagram of the module is seen in \cref{fig:blockModExp}. The data gets shifted in to either four 128bit shift registers (Y,X,n,e) or to the m 128bit shift register, which contains the message, depending on whether the initRsa or the startRsa is high. Depending on what arguments is to be sent to the monPro module, the 2 muxes has to be set to the right value by the control logic. The control logic also has to make sure that the result from monPro gets saved in the right register,$R$ or $P$, when the calculation is done. When all the calculations are done the final result can be shifted out from the $R$ register to the dataOut line. The control logic has to check $eMSB$ during each iteration to see if it has to run monPro one or two times at that iteration. From the state diagram in \cref{fig:fsmModExp} one can see that it is room for improving the the module further by not wasting a clock cycle at every iteration to change state to the second\_loop\_calc if $e[i]$ is low.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/rsa}
+    \caption{Block diagram of the modExp function}
+    \label{fig:blockModExp}
+\end{figure}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/rsa_fsm}
+    \caption{FSM state diagram of modExp}
+    \label{fig:fsmModExp}
+\end{figure}
+
+
+
 \subsection{Analyze/Estimate performance and area}
 \todo[inline]{Matte, k-1 antall cykler + hvor mange rgistre vi bruker gir estimat av performance og størrelse}
 \subsection{Discuss/Analyze/Conclude}
