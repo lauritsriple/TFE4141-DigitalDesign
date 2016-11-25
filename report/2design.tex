@@ -1,29 +1,35 @@
 \section{Design exploration and presentation of solution}
-\subsection{Evaluate a couple of different alternatives}\label{sec:differentAlternatives}
-\todo[inline]{litt om Blakely og mye om montgommery}
-Different algorithms of solving the modular exponential multiplication already exists. The problem with implementing such algorithms on a FPGA is that calculating $P=C^d\mod{n}$ and $C=P^e\mod{n}$, now referred to as $M^k\mod{n}$ can be very time consuming, so some sort of simplification or transformation of the algortihm is needed to make it run faster on a FPGA. It is possible to reduce the number of calculations needed to find $M^k$. With a keysize of 55, the easiest method is to just multiply the base with itself 54 times. This requires 54 multiplication operations, and would take a very long time with large numbers. This is a brute-force approach and has complexity $O(k)$. This approach is not ideal, but with some simple binary simplification we can write the exponent as $k=55=0x37=0b00110111$. This simplifies further when writing it as a sum of squared exponents of 2, $k=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. With this simplification $M^k$ can be written as:
+\subsection{Evaluation of different solutions}\label{sec:differentAlternatives}
+Different algorithms for solving the modular exponential multiplication already exists. 
+The problem with implementing such algorithms on an FPGA is that calculating $P=C^d\mod{n}$ and $C=P^e\mod{n}$, now referred to as $M^k\mod{n}$ can be very time consuming, so some sort of simplification or transformation of the algorithm is needed to make it run faster on a FPGA.
+It is possible to reduce the number of calculations needed to find $M^k$. With a keysize of 55, the easiest method is to just multiply the base with itself 54 times. 
+This requires 54 multiplication operations, and would take a very long time with large numbers. 
+This is a brute-force approach and has complexity $O(k)$. 
+This approach is not ideal, but with some simple binary simplification we can write the exponent as $k=55=0x37=0b00110111$. 
+This simplifies further when writing it as a sum of squared exponents of 2, $k=0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0=55$. 
+With this simplification $M^k$ can be written as:
 %
 \begin{equation}\label{Mexponential}
     M^{55}=M\exp(0\cdot2^7 + 0\cdot2^6 + 1\cdot2^5 + 1\cdot2^4 + 1\cdot2^2 + 1\cdot2^1 + 1\cdot2^0) 
     = M^{2^5} + M^{2^4} + M^{2^2} + M^{2^1} + M^{2^0} 
 \end{equation}
 %
-The pseudocode for this approach can be written as
+The pseudocode for this approach can seen in \cref{lst:simple_approach}.
 %
-\begin{lstlisting}
+\begin{lstlisting}[label=lst:simple_approach, caption=Simplified brute force exponentiation]
     C=1
     P=M
     for i in range(0,k-1), where k=number of bits
-        if Ki:
+        if M[i]:
             C=C*P
         P=P*P
     return C
 \end{lstlisting}
 %
 which should be fairly easy to see from \cref{Mexponential}. This change reduced the needed multiplications from 54 to 15, which is a significant decreased number of calculations.
-Multiplication of to nonnegative integers, $A$ and $B$, with bitsize, $k$ can be done with the following pseudocode
+Multiplication of two non-negative integers, $A$ and $B$, with bitsize $k$, can be done with the pseudocode in \cref{lst:A_B_mult}. 
 %
-\begin{lstlisting}
+\begin{lstlisting}[label=lst:A_B_mult, caption=Multiplication of two non-negative integers]
     P=0
     for i in range(0,k-1), where k=number of bits
         if B[k-1-i]:
@@ -32,8 +38,10 @@ Multiplication of to nonnegative integers, $A$ and $B$, with bitsize, $k$ can be
             P=2P
     return P
 \end{lstlisting}
-And exponential modular multiplication, $A\cdot B\mod{n}$ can be done by expanding the pseudocode for multiplicating $A*B$ to
-\begin{lstlisting}
+%
+\Cref{lst:A_B_mult} can be expanded to exponential modular multiplication, called Blakley's method. As \cref{lst:blakley} shows, the need for the multiplication and modular arithmetic has been simplified to add and subtract, based on bits in B.
+%
+\begin{lstlisting}[label=lst:blakley, caption=Blakely's method]
     P=0
     for i in range(0,k-1),where k=number of bits
         if B[k-1-i]:
@@ -47,8 +55,6 @@ And exponential modular multiplication, $A\cdot B\mod{n}$ can be done by expandi
             P=P-n
     return P
 \end{lstlisting}
-%
-where the need for the multiplication and modular arithmetic has been simplified to add and subtract, based on bits in B. This method is called Blakley's Method. 
 %
 In 1985, P.L. Montgomery introduced an efficient algorithm for computing $AB\mod{n}$. The algorithm is suitable for implementation on general-purpose computers which are capable of performing fast arithmetic modulo a power of 2. This algorithm replaces the need for division by n operation with division by a power of 2. This can be done because the original $AB\mod{n}$ has been mapped to a "montgomery plane". Given two n-residues $\bar{a}$ and $\bar{b}$, the Montgomery product is defined as the n-residue
 %
@@ -80,8 +86,8 @@ In order to describe the Montgomery reduction algorithm, an additional quantity,
 \begin{equation}
     u=\bar{a} \cdot \bar{b} \cdot r^{-1}
 \end{equation}
-is given below:
-\begin{lstlisting}
+is given \cref{lst:monpro}.
+\begin{lstlisting}[label=lst:monpro, caption=The Montgomery product algorithm]
     monPro(a_,b_)
         Compute n' using the extended Euclidean algorithm
         t = a_ * b_
@@ -95,7 +101,7 @@ is given below:
 %
 The important feature of the Montogmery product algorithm is that all the operations involved are multiplications modulo r and divisions by r, both of which are very fast operations since r is a power of 2. The monPro algorithm can be used to compute the product $a \cdot b \mod{n}$ given that $n$ is odd. This is a rather time consuming operation when a single modular multiplication is needed because the preprocessing operations, especially the computation of $n'$, are rather time consuming.
 
-The Mongomery product algorithm is more suitable when several modular multiplications with respect to the same modulus are needed. Such is the case when one needs to compute a modular exponentiation, i.e., the computation of $C=P^e\mod{n}$, which is the computation needed in the system. Replacing the modular exponentiation operation with multiple square and multiply operations modulo n, makes the Montgomery product function come to it's best use. The pseudocode for the Montgomery modular exponentiation can be found below.
+The Mongomery product algorithm is more suitable when several modular multiplications with respect to the same modulus are needed. Such is the case when one needs to compute a modular exponentiation, i.e., the computation of $C=P^e\mod{n}$, which is the computation needed in the system. Replacing the modular exponentiation operation with multiple square and multiply operations modulo n, makes the Montgomery product function come to its best use. The pseudocode for the Montgomery modular exponentiation can be found below.
 \begin{lstlisting}
     modExp(M,e,n) 
         Compute n' using the extended Euclidean algorithm
@@ -112,8 +118,9 @@ The Mongomery product algorithm is more suitable when several modular multiplica
 The Montgomery Method is the method implemented in this report. It seems to have multiple advantages over Blakley Method, specially with larger keysizes. Since the problem is to solve a 128bit RSA cryptosystem it is hard to say whether this will be faster than Blakley, it all depends on how the system is implemented in hardware, and what kind of optimization one can do to the algorithm. 
 %
 %SUBSECTION!!!!!!!
-\subsection{Present the architecture of the proposed solution/design.}
-Both the monPro and the modExp functions can be further optimized for the specific 128 bit RSA cryptosystem, due to the extra parameters $Y=r^2 \mod{n}$ and $X=r\mod{n}$, that are sent in to the system. The modExp function can now be changed to a function where all sub calculations are using the monPro function. This makes the design easier, since there is need for fewer different calculations, and with one monPro function, all the needed calculations can be executed.
+\subsection{Presentation of the proposed design}\label{sec:design}
+Both the monPro and the modExp functions can be further optimized for the specific 128 bit RSA cryptosystem, due to the extra parameters $Y=r^2 \mod{n}$ and $X=r\mod{n}$, that are sent in to the system. The modExp function can now be changed to a function where all sub calculations are using the monPro function. This makes the design easier, since there is need for fewer different calculations, and all the needed calculations can be executed with one monPro module.
+%
 \begin{lstlisting}
     def modExp(Y,M,e,n):
         P=monPro(Y,m)
@@ -125,7 +132,9 @@ Both the monPro and the modExp functions can be further optimized for the specif
         R = monPro(1,R)
         return R
 \end{lstlisting}
+%
 This is the pseudocode used in the cryptosystem implemented in this report. The monPro function can also be simplified, to only use one adder and one shift operation during each iteration, and possible one subtracter at the end of the loop to make sure the result is within $0<M<n$. Both the adding and shifting are extremely fast on a FPGA. The pseudocode of the monPro function after these simplification is shown below.
+%
 \begin{lstlisting}
     def monPro(A,B,n):
         M = 0 
@@ -139,9 +148,10 @@ This is the pseudocode used in the cryptosystem implemented in this report. The 
             M=M - n
         return M
 \end{lstlisting}
-This pseudocode can be expressed with the Block diagram in \cref{fig:blockMonPro}. The monPro module needs three input data values, where two of them, $n$ and $A$ is stored in a register outside the module, and the last one $B$ has to be stored inside the module, because the monPro functions needs the ability to shift it to the right so it can get the $B[i]$ on each iteration. It would be possible to store $n$ and $A$ inside the module, but this would have increased the area, although it would not have any impact on the number of clock cycles since they would be loaded at the same time as $B$ gets loaded. Some of the registers around the adder had to be increased to 130 bit instead of 128 bit to prevent overflow. Since the module might be doing two add operation before it shifts, there might be overflow on both the add operations and thus the need for two extra bits. This can be seen in the vhdl code in the appendix.
+%
+This pseudocode can be expressed with the Block diagram in \cref{fig:blockMonPro}. The monPro module needs three input data values, where two of them, $n$ and $A$ is stored in a register outside the module, and the last one $B$ has to be stored inside the module, because the monPro functions needs the ability to shift it to the right so it can get the $B[i]$ on each iteration. It would be possible to store $n$ and $A$ inside the module, but this would have increased the area, although it would not have any impact on the number of clock cycles since they would be loaded at the same time as $B$ gets loaded. Some of the registers around the adder had to be increased to 130 bit instead of 128 bit to prevent overflow. Since the module might be doing two add operation before it shifts, there might be overflow on both the add operations and thus the need for two extra bits. This can be seen in the VHDL code in the appendix.
 
-This module also has a control interface for the top module, with one start signal and a coreFinished signal. It takes in a start signal, after $A$,$B$ and $n$ are ready, and holds the coreFinished low during calculation. When coreFinished goes high, the result should be ready. The need for an init signal could have been implemented, but would make the module about one or two clock cycles slower during each calculation. Since the monPro module is running 259 times, it would have made the system slower. From the block diagram and the pseudocode one can see that it is possible to make this module a lot faster by skipping many iterations at the start. This can be done, because the module is just shifting zeroes, until $B[i]$ goes high for the first time. The
+This module also has a control interface for the top module, with one start signal and a coreFinished signal. It takes in a start signal, after $A$,$B$ and $n$ are ready, and holds the coreFinished low during calculation. When coreFinished goes high, the result should be ready. The need for an init signal could have been implemented, but would make the module about one or two clock cycles slower during each calculation. Since the monPro module is running 259 times, it would have made the system slower. From the block diagram and the pseudocode one can see that it is possible to make this module a lot faster by skipping many iterations at the start. This can be done, because the module is just shifting zeroes, until $B[i]$ goes high for the first time. The state diagram for this module can be seen in \cref{fig:fsmMonPro}
 
 \begin{figure}[htp]
     \centering
@@ -157,9 +167,7 @@ This module also has a control interface for the top module, with one start sign
     \label{fig:fsmMonPro}
 \end{figure}
 
-
-
-The modExp module, which is the top module of the design, has the specified interface in \cref{listing:RSAcore_entity} and the block diagram of the module is seen in \cref{fig:blockModExp}. The data gets shifted in to either four 128bit shift registers (Y,X,n,e) or to the m 128bit shift register, which contains the message, depending on whether the initRsa or the startRsa is high. Depending on what arguments is to be sent to the monPro module, the 2 muxes has to be set to the right value by the control logic. The control logic also has to make sure that the result from monPro gets saved in the right register,$R$ or $P$, when the calculation is done. When all the calculations are done the final result can be shifted out from the $R$ register to the dataOut line. The control logic has to check $eMSB$ during each iteration to see if it has to run monPro one or two times at that iteration. From the state diagram in \cref{fig:fsmModExp} one can see that it is room for improving the the module further by not wasting a clock cycle at every iteration to change state to the second\_loop\_calc if $e[i]$ is low.
+The modExp module, which is the top module of the design, has the specified interface in \cref{listing:RSAcore_entity} and the block diagram of the module is seen in \cref{fig:blockModExp}. The data gets shifted in to either four 128bit shift registers ($Y$,$X$,$n$,$e$) or to the $m$ 128bit shift register, which contains the message, depending on whether the initRsa or the startRsa is high. Depending on what arguments is to be sent to the monPro module, the 2 muxes has to be set to the right value by the control logic. The control logic also has to make sure that the result from monPro gets saved in the right register,$R$ or $P$, when the calculation is done. When all the calculations are done the final result can be shifted out from the $R$ register to the dataOut line. The control logic has to check $eMSB$ during each iteration to see if it has to run monPro one or two times at that iteration. From the state diagram in \cref{fig:fsmModExp} one can see that it is room for improving the the module further by not wasting a clock cycle at every iteration to change state to the second\_loop\_calc if $e[i]$ is low.
 
 \begin{figure}[htp]
     \centering
@@ -175,9 +183,9 @@ The modExp module, which is the top module of the design, has the specified inte
     \label{fig:fsmModExp}
 \end{figure}
 
+\subsection{Estimation of performance and area} \label{sec:estimatePerfArea}
+Given that the adder and the subtracter can both operate with less than one clock cycle, the monPro module needs one clock cycle for the init phase, 256 clock cycles during the loop, and one clock cycle to make output the result. This is a total of 258 clock cycles (worst case, with $B$ being all ones). The modExp function uses 16 clock cycles to load the keys, 4 clock cycles to load the message to initialize. After that it runs the monPro module for a total of 259 times (worst case, with $e$ being all ones). This adds up to $259*258=66822$ clock cycles. After that it uses 4 clock cycles to shift the result out. In total, modExp will use about $66822+16+4+4=66822$ clock cycles. As stated in \cref{sec:problemDescription}, $e$ is often chosen as small as possible, and in some of the tests it is almost all zeroes. Let say that $e$ only has 10 ones. Then the number of required clock cycles would be $16+4+258 \cdot (128+10)+118+4=35746$. Another approach for analyzing number of clock cycles required could be to always assume that $B$ has 50 \% ones and that $e$ has 50 \% ones. Then the number of required cycles would approximately be $16+4+(3+128+64) \cdot (128+64) +(128-64)+(128-64)+4 = 37592$ which is not that bad. 
 
+The area of this design should be close to $12\cdot 128 \text{ bit registers} + 5\cdot 130 \text{ bit register} = 2186 \text{ LUTs}$ since they are the most area consuming components. There are also one 130 bit adder and one 130 bit subtracter that will consume some space. The rest of the design will probably consume a small area compared to these large components since it is mostly one bit LUTs.  
 
-\subsection{Analyze/Estimate performance and area}
-\todo[inline]{Matte, k-1 antall cykler + hvor mange rgistre vi bruker gir estimat av performance og størrelse}
-\subsection{Discuss/Analyze/Conclude}
-\todo[inline]{Noe om at vi kan være fornøyde med denne framgangsmåten}
+In \cref{sec:synthezisResults} these numbers will be compared to the actual results from the simulation in Vivado and the results from the physical FPGA.

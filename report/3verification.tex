@@ -1,4 +1,4 @@
-\section{Verification plan and verification done}
+\section{Verification plan}
 %
 \subsection{Verification plan}
 The verification plan for the system consists of creating a type I test bench
@@ -16,7 +16,7 @@ guarantee that for every message passed to the system the correct encrypted mess
 The code with assertions can be seen in \cref{app:test_bench}.
 
 Since the software used for simulation, Vivado, does not support timing simulation in VHDL
-\cite{vivado_timing_sim}, the only functional simulations have been completed. 
+\cite{vivado_timing_sim}, only functional simulations have been completed. 
 This is only a minor issue as once the system passes functional simulations, 
 it can be tested on a physical FPGA. The RSA system should also pass a pre-made test on an actual
 FPGA. In this project it was possible to log on to a remote server, connected to a FPGA, that could
@@ -35,8 +35,8 @@ functional coverage is close to, if not 100 \%.
 %
 \subsection{Bring up test strategy}
 The bring up strategy used to get this system up and running was a bottom-up strategy. The first module
-implemented was the inner monPro algorithm. Once that was verified with the testbench with different
-stimulis, the top level modExp module was implemented. At this point it is possible to know that
+implemented was the inner monPro algorithm. Once that was verified with the test bench with different
+stimuli, the top level modExp module was implemented. At this point it is possible to know that
 problems with the module at the top, cannot propagate down to the underlying modules, so if there are
-any errors here, it is purely because somthing is wrong in the top module, since the bottom module is
+any errors here, it is purely because something is wrong in the top module, since the bottom module is
 already tested.
