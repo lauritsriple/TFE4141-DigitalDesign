@@ -1,3 +1,4 @@
 \section{Discussion}
-Analysis and discussion of problems, solutions and measured results is necessary in order to make the right decisions. Discussion should therefore be integrated into all parts of the report. 
-\subsection{What is done, what can be improved (future work).}
+The design proposed in this paper satisfies the requirements of the task. It has decent performance, and is not using a huge area. Using Montgomery's Method seems to have paid of, even on a system with 128bit key size. This design could probably be increased to handle longer key-sizes without much work. As long as the adder and subtractor can handle larger key-sizes with only one clock cycle to produce a result, the performance of this system compared to one that uses Blakley's Method would probably decrease slower with the increase of key-sizes.
+
+The implementation of the algorithm can be improved further to increase the throughput even more. It should be possible to check the two least significant bits of $B$ instead of just the least significant bit, to almost half the needed clock cycles in the monPro algorithm. This change requires the adder to be able to add three inputs instead of two. Together with the other proposed improvements in \cref{sec:design} this should increase the performance drastically.

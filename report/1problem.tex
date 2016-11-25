@@ -2,11 +2,19 @@
 %
 % SUBSECTION %
 %
-\subsection{Problem description}
-The need for secure telecommunications is required for electronic commerce and internet pricacy. Security requirements include confidentiality, authentication, data integrity and non-repudiation. These services are offered by public key cryptosystems, and the most popular of which is the RSA encryption scheme. Then fundamental operation of the algorithm is modular exponentiation which is achieved by repeated modular multiplications. With high bit lengths required to provide adequate security the need for specialized hardware to provide high enough throughput is preferred. There many algorithms with different grades of efficiency to solve this problem and some of them will be discussed in this paper.
-%
-The RSA algorithm was invented by Rivest, Shamir and Adleman in 1977. Suppose Alice wishes to send a secret message to Bob. In a secret key system, Alice and Bob need to know the same secret key and so it must be communicated via some secure channel. In a public key system, Bob broadcasts his public key and Alice, can use it to encode a message. The design of the cryptosystem is such that only Bob can decode the encrypted message, but no exchange of secret keys is necessary. 
-%
+\subsection{Problem description}\label{sec:problemDescription}
+The need for secure telecommunications is required for electronic commerce and internet pricacy. Security requirements include confidentiality, authentication, data integrity and non-repudiation. 
+These services are offered by public key cryptosystems, and the most popular of which is the RSA encryption scheme.
+The fundamental operation of the algorithm is modular exponentiation which is achieved by repeated modular multiplications. 
+With high bit lengths required to provide adequate security the need for specialized hardware to provide high enough throughput is preferred. 
+There are many algorithms with different grades of efficiency to solve this problem and some of them will be discussed in this paper.
+The RSA algorithm was invented by Rivest, Shamir and Adleman in 1977. 
+
+Suppose Alice wishes to send a secret message to Bob. 
+In a secret key system, Alice and Bob need to know the same secret key and so it must be communicated via some secure channel. 
+In a public key system, Bob broadcasts his public key, and Alice can use it to encode a message. 
+The design of the cryptosystem is such that only Bob can decode the encrypted message, but no exchange of secret keys is necessary. 
+
 The algorithm consists of 5 parameters; $n$,$p$,$q$,$e$ and $d$. 
 $p$ and $q$ are two random large prime numbers, and $n$ can be calculated by multiplying 
 them together, $n=pq$. $e$ is the public exponent and has to be in the range $1<e<\phi(n)$ 
@@ -22,9 +30,9 @@ The private exponent, $d$, is obtained by inverting $e$ $modulo$ $\phi(n)$, i.e
     d=e^{-1}\mod{\phi(n)}
 \end{equation}
 %
-In practice, $e$, is often chosen to be a small number which reduces the amount of computation needed computation required to perform encryption. The strength of RSA depends on the key size, $k$, the number of bits in $n$. Breaking RSA is believed to be as hard as factorizing $n$ to $p$,$q$, which is extremely time consuming with the current technology and fairly large key sizes. 
+In practice, $e$, is often chosen to be a small number which reduces the amount of computation needed to perform encryption. The strength of RSA depends on the key size, $k$, and the number of bits in $n$. Breaking RSA is believed to be as hard as factorizing $n$ to $p$,$q$, which is extremely time consuming with the current technology and fairly large key sizes. 
 %
-In the RSA cryptosystem, Alice must first find Bob's public key ($n$, $e$) which are the modulus and the exponent, respectively. She calculates the ciphertext,$C$, from the plaintext,$P$, by: 
+In the RSA cryptosystem, Alice must first find Bob's public key ($n$, $e$) which are the modulus and the exponent, respectively. She calculates the ciphertext, $C$, from the plaintext, $P$, by: 
 %
 \begin{equation}
     C=P^e\mod{n}
@@ -40,7 +48,7 @@ The problem with implementing this in hardware on an FPGA is that the exponentia
 $M^k$ can be very computational heavy, depending on the chosen algorithm. In \cref{sec:differentAlternatives} different algorithms and solutions will be presented.
 %
 % SUBSECTION
-%
+\newpage
 \subsection{Requirements}
 %
 The RSA encryption/decryption circuit is to meet the following requirements:
@@ -78,7 +86,7 @@ end RSACore;
 %
 % SUBSECTION
 %
-\subsection{Discussion and further investigation}
+%\subsection{Discussion and further investigation}
 %What do we need to investigate further before proposing a solution?
 
 
@@ -87,5 +95,5 @@ end RSACore;
 %\todo[inline]{Many ways to implement it on hardware}
 %\todo[inline]{Describe montgogemry in math and some bla,bla about the algorithm}
 %\todo[inline]{What is the strengths of doing this.}
-\todo[inline]{Main requirements. How fast do we need it to be? How many bits etc.}
-\todo[inline]{Investigate further. python model. reading other papers etc.}
+%\todo[inline]{Main requirements. How fast do we need it to be? How many bits etc.}
+%\todo[inline]{Investigate further. python model. reading other papers etc.}
